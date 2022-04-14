@@ -12,7 +12,7 @@ const game = @import("./game.zig");
 const log = @import("./log.zig");
 const ZecsiAllocator = @import("allocator.zig").ZecsiAllocator;
 
-////special entry point for Emscripten build, called from src/emscripten/entry.c
+////special entry point for Emscripten build, called from src/marshall/emscripten_entry.c
 export fn emsc_main() callconv(.C) c_int {
     return safeMain() catch |err| {
         log.err("ERROR: {?}", .{err});

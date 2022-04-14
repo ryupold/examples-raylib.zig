@@ -5,6 +5,7 @@ pub const APP_NAME = "raylib-zig-examples";
 
 const raylibSrc = "src/raylib/raylib/src/";
 const emscriptenSrc = "src/raylib/emscripten/";
+const marshalSrc = "src/raylib/marshal/";
 const webOutdir = "zig-out/web/";
 
 pub fn build(b: *std.build.Builder) !void {
@@ -105,6 +106,7 @@ pub fn build(b: *std.build.Builder) !void {
             std.log.info("emscripten include path: {s}", .{include_path});
             lib.addIncludeDir(include_path);
             lib.addIncludeDir(emscriptenSrc);
+            lib.addIncludeDir(marshalSrc);
             lib.addIncludeDir(raylibSrc);
 
             lib.setOutputDir(outdir);
@@ -120,13 +122,14 @@ pub fn build(b: *std.build.Builder) !void {
                 "-o",
                 outdir ++ "game.html",
                 emscriptenSrc ++ "entry.c",
-                emscriptenSrc ++ "raylib_marshall.c",
-                emscriptenSrc ++ "raylib_marshall_gen.c",
+                marshalSrc ++ "raylib_marshall.c",
+                marshalSrc ++ "raylib_marshall_gen.c",
                 // outdir ++ "libraylib.a",
                 outdir ++ "lib" ++ APP_NAME ++ ".a",
                 "-I.",
                 "-I" ++ raylibSrc,
                 "-I" ++ emscriptenSrc,
+                "-I" ++ marshalSrc,
                 "-L.",
                 "-L" ++ outdir,
                 "-lraylib",
@@ -172,9 +175,9 @@ pub fn build(b: *std.build.Builder) !void {
             const raylib = rayBuild.addRaylib(b, target);
             exe.linkLibrary(raylib);
             exe.addIncludeDir(raylibSrc);
-            exe.addIncludeDir(emscriptenSrc);
-            exe.addCSourceFile(emscriptenSrc ++ "raylib_marshall.c", &.{});
-            exe.addCSourceFile(emscriptenSrc ++ "raylib_marshall_gen.c", &.{});
+            exe.addIncludeDir(marshalSrc);
+            exe.addCSourceFile(marshalSrc ++ "raylib_marshall.c", &.{});
+            exe.addCSourceFile(marshalSrc ++ "raylib_marshall_gen.c", &.{});
 
             switch (raylib.target.getOsTag()) {
                 //dunno why but macos target needs sometimes 2 tries to build
