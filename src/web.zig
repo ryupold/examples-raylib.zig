@@ -5,12 +5,9 @@ const emsdk = @cImport({
     @cDefine("__EMSCRIPTEN__", "1");
     @cInclude("emscripten/emscripten.h");
 });
-const r = @cImport({
-    @cInclude("raylib.h");
-});
-const game = @import("./game.zig");
 const log = @import("./log.zig");
 const ZecsiAllocator = @import("allocator.zig").ZecsiAllocator;
+const r = @import("raylib/raylib.zig");
 
 ////special entry point for Emscripten build, called from src/marshall/emscripten_entry.c
 export fn emsc_main() callconv(.C) c_int {
@@ -20,17 +17,16 @@ export fn emsc_main() callconv(.C) c_int {
     };
 }
 
-export fn emsc_set_window_size(width: usize, height: usize) callconv(.C) void {
-    game.setWindowSize(width, height);
+export fn emsc_set_window_size(width: i32, height: i32) callconv(.C) void {
+    r.SetWindowSize(width, height);
 }
 
 fn safeMain() !c_int {
     var zalloc = ZecsiAllocator{};
     const allocator = zalloc.allocator();
-    try log.infoAlloc(allocator, "starting da game  ...", .{});
+    try log.infoAlloc(allocator, "starting ...", .{});
 
-    try game.start(allocator, .{.cwd = ""});
-    defer game.stop(allocator);
+    r.InitWindow(800, 800, "example");
 
     emsdk.emscripten_set_main_loop(gameLoop, 0, 1);
     log.info("after emscripten_set_main_loop", .{});
@@ -44,5 +40,9 @@ fn safeMain() !c_int {
 }
 
 export fn gameLoop() callconv(.C) void {
-    game.mainLoop() catch unreachable;
+    r.BeginDrawing();
+    defer r.EndDrawing();
+
+    r.ClearBackground(r.GREEN);
+    r.DrawFPS(10, 10);
 }

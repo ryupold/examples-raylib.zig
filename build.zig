@@ -108,6 +108,7 @@ pub fn build(b: *std.build.Builder) !void {
             lib.addIncludeDir(emscriptenSrc);
             lib.addIncludeDir(marshalSrc);
             lib.addIncludeDir(raylibSrc);
+            lib.addIncludeDir(raylibSrc ++ "extras/");
 
             lib.setOutputDir(outdir);
             lib.install();
@@ -122,14 +123,14 @@ pub fn build(b: *std.build.Builder) !void {
                 "-o",
                 outdir ++ "game.html",
                 emscriptenSrc ++ "entry.c",
-                marshalSrc ++ "raylib_marshall.c",
-                marshalSrc ++ "raylib_marshall_gen.c",
+                // marshalSrc ++ "raylib_marshall.c",
+                // marshalSrc ++ "raylib_marshall_gen.c",
                 // outdir ++ "libraylib.a",
                 outdir ++ "lib" ++ APP_NAME ++ ".a",
                 "-I.",
                 "-I" ++ raylibSrc,
                 "-I" ++ emscriptenSrc,
-                "-I" ++ marshalSrc,
+                // "-I" ++ marshalSrc,
                 "-L.",
                 "-L" ++ outdir,
                 "-lraylib",
@@ -149,8 +150,10 @@ pub fn build(b: *std.build.Builder) !void {
                 "--preload-file",
                 "assets",
                 "--source-map-base",
-                "-O1",
-                "-Os",
+                // optimizations
+                // "-O1",
+                // "-Os",
+
                 // "-sUSE_PTHREADS=1",
                 // "--profiling",
                 // "-sTOTAL_STACK=128MB",
@@ -175,9 +178,10 @@ pub fn build(b: *std.build.Builder) !void {
             const raylib = rayBuild.addRaylib(b, target);
             exe.linkLibrary(raylib);
             exe.addIncludeDir(raylibSrc);
-            exe.addIncludeDir(marshalSrc);
-            exe.addCSourceFile(marshalSrc ++ "raylib_marshall.c", &.{});
-            exe.addCSourceFile(marshalSrc ++ "raylib_marshall_gen.c", &.{});
+            exe.addIncludeDir(raylibSrc ++ "extras/");
+            // exe.addIncludeDir(marshalSrc);
+            // exe.addCSourceFile(marshalSrc ++ "raylib_marshall.c", &.{});
+            // exe.addCSourceFile(marshalSrc ++ "raylib_marshall_gen.c", &.{});
 
             switch (raylib.target.getOsTag()) {
                 //dunno why but macos target needs sometimes 2 tries to build
