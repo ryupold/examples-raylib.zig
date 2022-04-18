@@ -17,8 +17,8 @@ export fn emsc_main() callconv(.C) c_int {
     };
 }
 
-export fn emsc_set_window_size(width: i32, height: i32) callconv(.C) void {
-    r.SetWindowSize(width, height);
+export fn emsc_set_window_size(width: c_int, height: c_int) callconv(.C) void {
+    r.SetWindowSize(@intCast(i32, width), @intCast(i32, height));
 }
 
 fn safeMain() !c_int {

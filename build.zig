@@ -151,8 +151,8 @@ pub fn build(b: *std.build.Builder) !void {
                 "assets",
                 "--source-map-base",
                 // optimizations
-                // "-O1",
-                // "-Os",
+                "-O1",
+                "-Os",
 
                 // "-sUSE_PTHREADS=1",
                 // "--profiling",
