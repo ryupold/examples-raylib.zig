@@ -4,9 +4,7 @@ const fs = std.fs;
 pub const APP_NAME = "raylib-zig-examples";
 
 const raylibSrc = "src/raylib/raylib/src/";
-const emscriptenSrc = "src/raylib/emscripten/";
 const bindingSrc = "src/raylib/";
-const webOutdir = "zig-out/web/";
 
 pub fn build(b: *std.build.Builder) !void {
     // Standard target options allows the person running `zig build` to choose
@@ -21,16 +19,18 @@ pub fn build(b: *std.build.Builder) !void {
 
     switch (target.getOsTag()) {
         .wasi, .emscripten => {
+            const emscriptenSrc = "src/raylib/emscripten/";
+            const webCachedir = "zig-cache/web/";
+            const webOutdir = "zig-out/web/";
+
             std.log.info("building for emscripten\n", .{});
             if (b.sysroot == null) {
-                // std.log.err("Please build with 'zig build -Drelease-small -Dtarget=wasm32-wasi --sysroot [path/to/emsdk]/upstream/emscripten'", .{});
                 std.log.err("\n\nUSAGE: Please build with 'zig build -Drelease-small -Dtarget=wasm32-wasi --sysroot \"$EMSDK/upstream/emscripten\"'\n\n", .{});
                 return error.SysRootExpected;
             }
             const lib = b.addStaticLibrary(APP_NAME, "src/web.zig");
             lib.addIncludeDir(raylibSrc);
 
-            const outdir = webOutdir;
 
             const emcc_file = switch (b.host.target.os.tag) {
                 .windows => "emcc.bat",
@@ -54,33 +54,33 @@ pub fn build(b: *std.build.Builder) !void {
             const include_path = try fs.path.join(b.allocator, &.{ b.sysroot.?, "cache", "sysroot", "include" });
             defer b.allocator.free(include_path);
 
-            // fs.cwd().deleteTree(outdir) catch {};
-            fs.cwd().makePath(outdir) catch {};
+            fs.cwd().makePath(webCachedir) catch {};
+            fs.cwd().makePath(webOutdir) catch {};
 
             const warnings = ""; //-Wall
 
-            const rcoreO = b.addSystemCommand(&.{ emcc_path, "-Os", warnings, "-c", raylibSrc ++ "rcore.c", "-o", outdir ++ "rcore.o", "-Os", warnings, "-DPLATFORM_WEB", "-DGRAPHICS_API_OPENGL_ES2" });
-            const rshapesO = b.addSystemCommand(&.{ emcc_path, "-Os", warnings, "-c", raylibSrc ++ "rshapes.c", "-o", outdir ++ "rshapes.o", "-Os", warnings, "-DPLATFORM_WEB", "-DGRAPHICS_API_OPENGL_ES2" });
-            const rtexturesO = b.addSystemCommand(&.{ emcc_path, "-Os", warnings, "-c", raylibSrc ++ "rtextures.c", "-o", outdir ++ "rtextures.o", "-Os", warnings, "-DPLATFORM_WEB", "-DGRAPHICS_API_OPENGL_ES2" });
-            const rtextO = b.addSystemCommand(&.{ emcc_path, "-Os", warnings, "-c", raylibSrc ++ "rtext.c", "-o", outdir ++ "rtext.o", "-Os", warnings, "-DPLATFORM_WEB", "-DGRAPHICS_API_OPENGL_ES2" });
-            const rmodelsO = b.addSystemCommand(&.{ emcc_path, "-Os", warnings, "-c", raylibSrc ++ "rmodels.c", "-o", outdir ++ "rmodels.o", "-Os", warnings, "-DPLATFORM_WEB", "-DGRAPHICS_API_OPENGL_ES2" });
-            const utilsO = b.addSystemCommand(&.{ emcc_path, "-Os", warnings, "-c", raylibSrc ++ "utils.c", "-o", outdir ++ "utils.o", "-Os", warnings, "-DPLATFORM_WEB" });
-            const raudioO = b.addSystemCommand(&.{ emcc_path, "-Os", warnings, "-c", raylibSrc ++ "raudio.c", "-o", outdir ++ "raudio.o", "-Os", warnings, "-DPLATFORM_WEB" });
+            const rcoreO = b.addSystemCommand(&.{ emcc_path, "-Os", warnings, "-c", raylibSrc ++ "rcore.c", "-o", webCachedir ++ "rcore.o", "-Os", warnings, "-DPLATFORM_WEB", "-DGRAPHICS_API_OPENGL_ES2" });
+            const rshapesO = b.addSystemCommand(&.{ emcc_path, "-Os", warnings, "-c", raylibSrc ++ "rshapes.c", "-o", webCachedir ++ "rshapes.o", "-Os", warnings, "-DPLATFORM_WEB", "-DGRAPHICS_API_OPENGL_ES2" });
+            const rtexturesO = b.addSystemCommand(&.{ emcc_path, "-Os", warnings, "-c", raylibSrc ++ "rtextures.c", "-o", webCachedir ++ "rtextures.o", "-Os", warnings, "-DPLATFORM_WEB", "-DGRAPHICS_API_OPENGL_ES2" });
+            const rtextO = b.addSystemCommand(&.{ emcc_path, "-Os", warnings, "-c", raylibSrc ++ "rtext.c", "-o", webCachedir ++ "rtext.o", "-Os", warnings, "-DPLATFORM_WEB", "-DGRAPHICS_API_OPENGL_ES2" });
+            const rmodelsO = b.addSystemCommand(&.{ emcc_path, "-Os", warnings, "-c", raylibSrc ++ "rmodels.c", "-o", webCachedir ++ "rmodels.o", "-Os", warnings, "-DPLATFORM_WEB", "-DGRAPHICS_API_OPENGL_ES2" });
+            const utilsO = b.addSystemCommand(&.{ emcc_path, "-Os", warnings, "-c", raylibSrc ++ "utils.c", "-o", webCachedir ++ "utils.o", "-Os", warnings, "-DPLATFORM_WEB" });
+            const raudioO = b.addSystemCommand(&.{ emcc_path, "-Os", warnings, "-c", raylibSrc ++ "raudio.c", "-o", webCachedir ++ "raudio.o", "-Os", warnings, "-DPLATFORM_WEB" });
             const libraylibA = b.addSystemCommand(&.{
                 emar_path,
                 "rcs",
-                outdir ++ "libraylib.a",
-                outdir ++ "rcore.o",
-                outdir ++ "rshapes.o",
-                outdir ++ "rtextures.o",
-                outdir ++ "rtext.o",
-                outdir ++ "rmodels.o",
-                outdir ++ "utils.o",
-                outdir ++ "raudio.o",
+                webCachedir ++ "libraylib.a",
+                webCachedir ++ "rcore.o",
+                webCachedir ++ "rshapes.o",
+                webCachedir ++ "rtextures.o",
+                webCachedir ++ "rtext.o",
+                webCachedir ++ "rmodels.o",
+                webCachedir ++ "utils.o",
+                webCachedir ++ "raudio.o",
             });
             const emranlib = b.addSystemCommand(&.{
                 emranlib_path,
-                outdir ++ "libraylib.a",
+                webCachedir ++ "libraylib.a",
             });
 
             libraylibA.step.dependOn(&rcoreO.step);
@@ -93,7 +93,7 @@ pub fn build(b: *std.build.Builder) !void {
             emranlib.step.dependOn(&libraylibA.step);
 
             //only build raylib if not already there
-            _ = fs.cwd().statFile(outdir ++ "libraylib.a") catch {
+            _ = fs.cwd().statFile(webCachedir ++ "libraylib.a") catch {
                 lib.step.dependOn(&emranlib.step);
             };
 
@@ -108,7 +108,7 @@ pub fn build(b: *std.build.Builder) !void {
             lib.addIncludeDir(raylibSrc);
             lib.addIncludeDir(raylibSrc ++ "extras/");
 
-            lib.setOutputDir(outdir);
+            lib.setOutputDir(webCachedir);
             lib.install();
 
             const shell = switch (mode) {
@@ -119,18 +119,18 @@ pub fn build(b: *std.build.Builder) !void {
             const emcc = b.addSystemCommand(&.{
                 emcc_path,
                 "-o",
-                outdir ++ "game.html",
+                webOutdir ++ "game.html",
 
                 emscriptenSrc ++ "entry.c",
                 bindingSrc ++ "marshal.c",
 
-                outdir ++ "lib" ++ APP_NAME ++ ".a",
+                webCachedir ++ "lib" ++ APP_NAME ++ ".a",
                 "-I.",
                 "-I" ++ raylibSrc,
                 "-I" ++ emscriptenSrc,
                 "-I" ++ bindingSrc,
                 "-L.",
-                "-L" ++ outdir,
+                "-L" ++ webCachedir,
                 "-lraylib",
                 "-l" ++ APP_NAME,
                 "--shell-file",

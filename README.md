@@ -2,6 +2,13 @@
 
 This is a collection of examples using the Zig raylib bindings of [raylib.zig](https://github.com/ryupold/raylib.zig)
 
+
+## supported platforms
+- Windows
+- macOS
+- Linux
+- HTML5/WebGL (emscripten)
+
 ## BUILD
 
 ### dependencies
@@ -32,7 +39,7 @@ The output files will be in `./zig-out/bin`
 ```sh
 EMSDK=../emsdk #path to emscripten sdk
 
-zig build -Drelease-small -Dtarget=wasm32-wasi --sysroot $EMSDK/upstream/emscripten/
+zig build -Drelease-small -Dtarget=wasm32-wasi --sysroot "$EMSDK/upstream/emscripten"
 ```
 
 The output files will be in `./zig-out/web/`
