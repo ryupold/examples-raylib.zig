@@ -42,7 +42,9 @@ fn safeMain() !c_int {
 export fn gameLoop() callconv(.C) void {
     r.BeginDrawing();
     defer r.EndDrawing();
-
-    r.ClearBackground(r.GREEN);
+    
+    r.ClearBackground(r.BLACK);
     r.DrawFPS(10, 10);
+
+    r.DrawText("hello planet", 100, 100, 20, r.YELLOW);
 }

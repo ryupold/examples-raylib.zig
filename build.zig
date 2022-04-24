@@ -5,7 +5,7 @@ pub const APP_NAME = "raylib-zig-examples";
 
 const raylibSrc = "src/raylib/raylib/src/";
 const emscriptenSrc = "src/raylib/emscripten/";
-const marshalSrc = "src/raylib/marshal/";
+const bindingSrc = "src/raylib/";
 const webOutdir = "zig-out/web/";
 
 pub fn build(b: *std.build.Builder) !void {
@@ -23,9 +23,9 @@ pub fn build(b: *std.build.Builder) !void {
         .wasi, .emscripten => {
             std.log.info("building for emscripten\n", .{});
             if (b.sysroot == null) {
-                // std.log.err("Please build with 'zig build -Dtarget=wasm32-emscripten --sysroot [path/to/emsdk]/upstream/emscripten/cache/sysroot", .{});
-                std.log.err("Please build with 'zig build -Dtarget=wasm32-wasi --sysroot \"$EMSDK/upstream/emscripten\"", .{});
-                @panic("error.SysRootExpected");
+                // std.log.err("Please build with 'zig build -Drelease-small -Dtarget=wasm32-wasi --sysroot [path/to/emsdk]/upstream/emscripten'", .{});
+                std.log.err("\n\nUSAGE: Please build with 'zig build -Drelease-small -Dtarget=wasm32-wasi --sysroot \"$EMSDK/upstream/emscripten\"'\n\n", .{});
+                return error.SysRootExpected;
             }
             const lib = b.addStaticLibrary(APP_NAME, "src/web.zig");
             lib.addIncludeDir(raylibSrc);
@@ -97,16 +97,14 @@ pub fn build(b: *std.build.Builder) !void {
                 lib.step.dependOn(&emranlib.step);
             };
 
-            //--- from:  https://github.com/floooh/pacman.zig/blob/main/build.zig -----------------
-            // var wasm32 = target;
-            // wasm32.os_tag = .emscripten;
             lib.setTarget(target);
             lib.setBuildMode(mode);
-            lib.defineCMacro("__EMSCRIPTEN__", "1");
+            lib.defineCMacro("__EMSCRIPTEN__", null);
+            lib.defineCMacro("PLATFORM_WEB", null);
             std.log.info("emscripten include path: {s}", .{include_path});
             lib.addIncludeDir(include_path);
             lib.addIncludeDir(emscriptenSrc);
-            lib.addIncludeDir(marshalSrc);
+            lib.addIncludeDir(bindingSrc);
             lib.addIncludeDir(raylibSrc);
             lib.addIncludeDir(raylibSrc ++ "extras/");
 
@@ -122,15 +120,15 @@ pub fn build(b: *std.build.Builder) !void {
                 emcc_path,
                 "-o",
                 outdir ++ "game.html",
+
                 emscriptenSrc ++ "entry.c",
-                // marshalSrc ++ "raylib_marshall.c",
-                // marshalSrc ++ "raylib_marshall_gen.c",
-                // outdir ++ "libraylib.a",
+                bindingSrc ++ "marshal.c",
+
                 outdir ++ "lib" ++ APP_NAME ++ ".a",
                 "-I.",
                 "-I" ++ raylibSrc,
                 "-I" ++ emscriptenSrc,
-                // "-I" ++ marshalSrc,
+                "-I" ++ bindingSrc,
                 "-L.",
                 "-L" ++ outdir,
                 "-lraylib",
@@ -150,6 +148,7 @@ pub fn build(b: *std.build.Builder) !void {
                 "--preload-file",
                 "assets",
                 "--source-map-base",
+
                 // optimizations
                 "-O1",
                 "-Os",
@@ -179,9 +178,8 @@ pub fn build(b: *std.build.Builder) !void {
             exe.linkLibrary(raylib);
             exe.addIncludeDir(raylibSrc);
             exe.addIncludeDir(raylibSrc ++ "extras/");
-            // exe.addIncludeDir(marshalSrc);
-            // exe.addCSourceFile(marshalSrc ++ "raylib_marshall.c", &.{});
-            // exe.addCSourceFile(marshalSrc ++ "raylib_marshall_gen.c", &.{});
+            exe.addIncludeDir(bindingSrc);
+            exe.addCSourceFile(bindingSrc ++ "marshal.c", &.{});
 
             switch (raylib.target.getOsTag()) {
                 //dunno why but macos target needs sometimes 2 tries to build
@@ -192,6 +190,14 @@ pub fn build(b: *std.build.Builder) !void {
                     exe.linkFramework("CoreAudio");
                     exe.linkFramework("CoreVideo");
                     exe.linkFramework("IOKit");
+                },
+                .linux => {
+                    exe.addLibPath("/usr/lib64/");
+                    exe.linkSystemLibrary("GL");
+                    exe.linkSystemLibrary("rt");
+                    exe.linkSystemLibrary("dl");
+                    exe.linkSystemLibrary("m");
+                    exe.linkSystemLibrary("X11");
                 },
                 else => {},
             }
