@@ -237,9 +237,9 @@ fn promptExample() !void {
         var writer = output.writer();
 
         try writer.writeAll("\n\nExamples:\n-------------------------\n");
-        for (exampleList.kvs) |example, i| {
+        for (exampleList) |example, i| {
             defer fba.reset();
-            try writer.writeAll(try std.fmt.allocPrint(fba.allocator(), "{d}:\t{s}\n", .{ i + 1, example.key }));
+            try writer.writeAll(try std.fmt.allocPrint(fba.allocator(), "{d}:\t{s}\n", .{ i + 1, example }));
         }
         try writer.writeAll("-------------------------\n\nSelect which example should be built: ");
 
@@ -250,11 +250,11 @@ fn promptExample() !void {
         const nr = std.fmt.parseInt(usize, option.?, 10) catch continue;
         fba.reset();
 
-        for (exampleList.kvs) |example, i| {
+        for (exampleList) |example, i| {
             if (nr == i + 1) {
                 var load_example = try std.fs.cwd().createFile("src/load_example.zig", .{});
                 defer load_example.close();
-                try load_example.writeAll(try std.fmt.allocPrint(fba.allocator(), "pub const name = \"{s}\";\n", .{example.key}));
+                try load_example.writeAll(try std.fmt.allocPrint(fba.allocator(), "pub const name = \"{s}\";\n", .{example}));
                 break :prompt;
             }
         }

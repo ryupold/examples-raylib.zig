@@ -1,4 +1,5 @@
-// Zig version of: https://www.raylib.com/examples/core/loader.html?name=core_input_keys
+//! Zig version of: https://www.raylib.com/examples/core/loader.html?name=core_input_keys
+
 const std = @import("std");
 const Example = @import("../example.zig").Example;
 const raylib = @import("../../raylib/raylib.zig");
