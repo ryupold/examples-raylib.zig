@@ -1,5 +1,6 @@
 const std = @import("std");
 const fs = std.fs;
+const exampleList = @import("src/examples.zig").exampleList;
 
 pub const APP_NAME = "raylib-zig-examples";
 
@@ -7,6 +8,8 @@ const raylibSrc = "src/raylib/raylib/src/";
 const bindingSrc = "src/raylib/";
 
 pub fn build(b: *std.build.Builder) !void {
+    try promptExample();
+
     // Standard target options allows the person running `zig build` to choose
     // what target to build for. Here we do not override the defaults, which
     // means any target is allowed, and the default is native. Other options
@@ -30,7 +33,6 @@ pub fn build(b: *std.build.Builder) !void {
             }
             const lib = b.addStaticLibrary(APP_NAME, "src/web.zig");
             lib.addIncludeDir(raylibSrc);
-
 
             const emcc_file = switch (b.host.target.os.tag) {
                 .windows => "emcc.bat",
@@ -166,6 +168,8 @@ pub fn build(b: *std.build.Builder) !void {
 
             b.getInstallStep().dependOn(&emcc.step);
             //-------------------------------------------------------------------------------------
+
+            std.log.info("\n\nOutput files will be in {s}\n---\ncd {s}\npython -m http.server\n---\n\nbuilding...", .{webOutdir, webOutdir});
         },
         else => {
             std.log.info("building for desktop\n", .{});
@@ -222,4 +226,37 @@ pub fn build(b: *std.build.Builder) !void {
 
     const test_step = b.step("test", "Run unit tests");
     test_step.dependOn(&exe_tests.step);
+}
+
+fn promptExample() !void {
+    prompt: while (true) {
+        var buf: [4069]u8 = undefined;
+        var fba = std.heap.FixedBufferAllocator.init(&buf);
+        defer fba.reset();
+        const output = std.io.getStdOut();
+        var writer = output.writer();
+
+        try writer.writeAll("\n\nExamples:\n-------------------------\n");
+        for (exampleList.kvs) |example, i| {
+            defer fba.reset();
+            try writer.writeAll(try std.fmt.allocPrint(fba.allocator(), "{d}:\t{s}\n", .{ i + 1, example.key }));
+        }
+        try writer.writeAll("-------------------------\n\nSelect which example should be built: ");
+
+        const input = std.io.getStdIn();
+        var reader = input.reader();
+
+        const option = reader.readUntilDelimiterOrEofAlloc(fba.allocator(), '\n', buf.len) catch continue;
+        const nr = std.fmt.parseInt(usize, option.?, 10) catch continue;
+        fba.reset();
+
+        for (exampleList.kvs) |example, i| {
+            if (nr == i + 1) {
+                var load_example = try std.fs.cwd().createFile("src/load_example.zig", .{});
+                defer load_example.close();
+                try load_example.writeAll(try std.fmt.allocPrint(fba.allocator(), "pub const name = \"{s}\";\n", .{example.key}));
+                break :prompt;
+            }
+        }
+    }
 }

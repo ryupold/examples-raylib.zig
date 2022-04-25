@@ -9,6 +9,10 @@ This is a collection of examples using the Zig raylib bindings of [raylib.zig](h
 - Linux
 - HTML5/WebGL (emscripten)
 
+## examples
+The examples can be found in `./src/examples`.
+During build you will be asked which example should be executed.
+
 ## BUILD
 
 ### dependencies

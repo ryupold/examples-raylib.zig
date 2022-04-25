@@ -4,3 +4,5 @@ zig-cache/
 zig-out/
 
 .env
+
+src/load_example.zig
