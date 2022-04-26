@@ -35,7 +35,7 @@ fn init(allocator: std.mem.Allocator) !void {
 
 fn update(_: f32) !void {
     // Update
-    if (raylib.IsMouseButtonDown(@enumToInt(raylib.MouseButton.MOUSE_BUTTON_LEFT))) {
+    if (raylib.IsMouseButtonDown(.MOUSE_BUTTON_LEFT)) {
         // Create more bunnies
         var i: usize = 0;
         while (i < 100) : (i += 1) {

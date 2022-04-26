@@ -17,16 +17,16 @@ var start: raylib.Vector2 = .{ .x = 0, .y = 0 };
 var end: raylib.Vector2 = .{ .x = @intToFloat(f32, screenWidth), .y = @intToFloat(f32, screenHeight) };
 
 fn init(_: std.mem.Allocator) !void {
-    raylib.SetConfigFlags(@enumToInt(raylib.ConfigFlags.FLAG_MSAA_4X_HINT));
+    raylib.SetConfigFlags(.FLAG_MSAA_4X_HINT);
     raylib.InitWindow(screenWidth, screenHeight, "raylib [shapes] example - cubic-bezier lines");
     raylib.SetTargetFPS(60);
 }
 
 fn update(_: f32) !void {
     // Update
-    if (raylib.IsMouseButtonDown(@enumToInt(raylib.MouseButton.MOUSE_BUTTON_LEFT))) {
+    if (raylib.IsMouseButtonDown(.MOUSE_BUTTON_LEFT)) {
         start = raylib.GetMousePosition();
-    } else if (raylib.IsMouseButtonDown(@enumToInt(raylib.MouseButton.MOUSE_BUTTON_RIGHT))) {
+    } else if (raylib.IsMouseButtonDown(.MOUSE_BUTTON_RIGHT)) {
         end = raylib.GetMousePosition();
     }
 

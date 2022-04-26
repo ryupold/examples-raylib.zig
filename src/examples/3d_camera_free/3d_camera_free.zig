@@ -37,7 +37,7 @@ fn init(_: std.mem.Allocator) !void {
 }
 
 fn update(_: f32) !void {
-    if (raylib.IsKeyDown('Z'))
+    if (raylib.IsKeyDown(.KEY_Z))
         camera.target = .{ .x = 0.0, .y = 0.0, .z = 0.0 };
     raylib.UpdateCamera(&camera);
 

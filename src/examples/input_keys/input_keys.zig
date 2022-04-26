@@ -26,10 +26,10 @@ fn init(_: std.mem.Allocator) !void {
 }
 
 fn update(_: f32) !void {
-    if (IsKeyDown(@enumToInt(Keys.KEY_RIGHT))) ballPosition.x += 2.0;
-    if (IsKeyDown(@enumToInt(Keys.KEY_LEFT))) ballPosition.x -= 2.0;
-    if (IsKeyDown(@enumToInt(Keys.KEY_UP))) ballPosition.y -= 2.0;
-    if (IsKeyDown(@enumToInt(Keys.KEY_DOWN))) ballPosition.y += 2.0;
+    if (IsKeyDown(.KEY_RIGHT)) ballPosition.x += 2.0;
+    if (IsKeyDown(.KEY_LEFT)) ballPosition.x -= 2.0;
+    if (IsKeyDown(.KEY_UP)) ballPosition.y -= 2.0;
+    if (IsKeyDown(.KEY_DOWN)) ballPosition.y += 2.0;
 
     raylib.BeginDrawing();
     defer raylib.EndDrawing();

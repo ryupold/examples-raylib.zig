@@ -10,7 +10,7 @@ pub const example = Example{
 fn init(_: std.mem.Allocator) !void {
     raylib.InitWindow(800, 800, "hello world!");
 
-    raylib.SetConfigFlags(@enumToInt(raylib.ConfigFlags.FLAG_WINDOW_RESIZABLE));
+    raylib.SetConfigFlags(.FLAG_WINDOW_RESIZABLE);
     raylib.SetTargetFPS(60);
 }
 
