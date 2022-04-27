@@ -2,6 +2,7 @@ const std = @import("std");
 const fmt = std.fmt;
 const emsdk = @cImport({
     @cDefine("__EMSCRIPTEN__", "1");
+    @cDefine("PLATFORM_WEB", "1");
     @cInclude("emscripten/emscripten.h");
 });
 const log = @import("log.zig");
