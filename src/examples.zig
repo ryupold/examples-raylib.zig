@@ -8,6 +8,8 @@ pub const exampleList: []const []const u8 = &.{
     "smooth_pixel_perfect",
     "lines_bezier",
     "bunnymark",
+    "input_box",
+    "controls_test_suite",
 };
 
 pub const examples = std.ComptimeStringMap(Example, .{
@@ -17,4 +19,6 @@ pub const examples = std.ComptimeStringMap(Example, .{
     .{ "smooth_pixel_perfect", @import("examples/smooth_pixel_perfect/smooth_pixel_perfect.zig").example },
     .{ "lines_bezier", @import("examples/lines_bezier/lines_bezier.zig").example },
     .{ "bunnymark", @import("examples/bunnymark/bunnymark.zig").example },
+    .{ "input_box", @import("examples/input_box/input_box.zig").example },
+    .{ "controls_test_suite", @import("examples/controls_test_suite/controls_test_suite.zig").example },
 });

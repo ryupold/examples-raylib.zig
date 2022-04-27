@@ -236,18 +236,21 @@ fn promptExample() !void {
         const output = std.io.getStdOut();
         var writer = output.writer();
 
-        try writer.writeAll("\n\nExamples:\n-------------------------\n");
+        try writer.writeAll("\n\nExamples:\n--------------------------------------------------\n");
         for (exampleList) |example, i| {
             defer fba.reset();
             try writer.writeAll(try std.fmt.allocPrint(fba.allocator(), "{d}:\t{s}\n", .{ i + 1, example }));
         }
-        try writer.writeAll("-------------------------\n\nSelect which example should be built: ");
+        try writer.writeAll("--------------------------------------------------\n\nSelect which example should be built: ");
 
         const input = std.io.getStdIn();
         var reader = input.reader();
 
         const option = reader.readUntilDelimiterOrEofAlloc(fba.allocator(), '\n', buf.len) catch continue;
-        const nr = std.fmt.parseInt(usize, option.?, 10) catch continue;
+        const nr = std.fmt.parseInt(usize, std.mem.trim(u8, option.?, " \t\n\r"), 10) catch |err| {
+            std.log.err("{?} in input: {s}", .{err, option});
+            continue;
+        };
         fba.reset();
 
         for (exampleList) |example, i| {
