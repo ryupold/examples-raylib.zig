@@ -11,6 +11,7 @@ pub const exampleList: []const []const u8 = &.{
     "input_box",
     "controls_test_suite",
     "physics_demo",
+    "heightmap",
 };
 
 pub const examples = std.ComptimeStringMap(Example, .{
@@ -23,4 +24,5 @@ pub const examples = std.ComptimeStringMap(Example, .{
     .{ "input_box", @import("examples/input_box/input_box.zig").example },
     .{ "controls_test_suite", @import("examples/controls_test_suite/controls_test_suite.zig").example },
     .{ "physics_demo", @import("examples/physics_demo/physics_demo.zig").example },
+    .{ "heightmap", @import("examples/heightmap/heightmap.zig").example },
 });

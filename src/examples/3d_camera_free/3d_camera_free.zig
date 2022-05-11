@@ -26,13 +26,13 @@ var camera: Camera3D = .{
     .target = .{ .x = 0, .y = 0, .z = 0 },
     .up = .{ .x = 0, .y = 1, .z = 0 },
     .fovy = 45.0,
-    .projection = @enumToInt(raylib.CameraProjection.CAMERA_PERSPECTIVE),
+    .projection = .CAMERA_PERSPECTIVE,
 };
 var cubePosition: Vector3 = .{ .x = 0, .y = 0, .z = 0 };
 
 fn init(_: std.mem.Allocator) !void {
     raylib.InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera free");
-    raylib.SetCameraMode(camera, @enumToInt(raylib.CameraMode.CAMERA_FREE));
+    raylib.SetCameraMode(camera, .CAMERA_FREE);
     raylib.SetTargetFPS(60);
 }
 
