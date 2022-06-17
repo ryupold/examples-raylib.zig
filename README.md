@@ -18,7 +18,7 @@ You can test the WebGL examples [here](https://ryupold.de/pages/raylib.zig/rayli
 
 ### dependencies
 - git
-- [zig (0.9.1)](https://ziglang.org/documentation/0.9.1/)
+- [zig (0.10.0)](https://ziglang.org/documentation/master/)
 - [emscripten sdk](https://emscripten.org/)
 
 ```
