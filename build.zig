@@ -241,7 +241,7 @@ fn promptExample() !void {
 
         const option = reader.readUntilDelimiterOrEofAlloc(fba.allocator(), '\n', buf.len) catch continue;
         const nr = std.fmt.parseInt(usize, std.mem.trim(u8, option.?, " \t\n\r"), 10) catch |err| {
-            std.log.err("{?} in input: {s}", .{err, option});
+            std.log.err("{?} in input: {?s}", .{err, option});
             continue;
         };
         fba.reset();

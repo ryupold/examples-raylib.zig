@@ -15,11 +15,45 @@ fn init(_: std.mem.Allocator) !void {
 }
 
 fn update(_: f32) !void {
-        raylib.BeginDrawing();
-        defer raylib.EndDrawing();
-        
-        raylib.ClearBackground(raylib.BLACK);
-        raylib.DrawFPS(10, 10);
+    raylib.BeginDrawing();
+    defer raylib.EndDrawing();
 
-        raylib.DrawText("hello world!", 100, 100, 20, raylib.YELLOW);
+    raylib.ClearBackground(raylib.BLACK);
+    raylib.DrawFPS(10, 10);
+
+    raylib.DrawText(
+        "hello world!",
+        100,
+        100,
+        30,
+        raylib.YELLOW,
+    );
+    var buf : [1024]u8 = undefined;
+    
+    const raylibVersion = try std.fmt.bufPrintZ(&buf, "raylib {s}", .{raylib.RAYLIB_VERSION});
+    raylib.DrawText(
+        raylibVersion,
+        100,
+        150,
+        20,
+        raylib.YELLOW,
+    );
+    
+    const rlGlVersion = try std.fmt.bufPrintZ(&buf, "rlgl {s}", .{raylib.RLGL_VERSION});
+    raylib.DrawText(
+        rlGlVersion,
+        100,
+        180,
+        20,
+        raylib.YELLOW,
+    );
+
+    const glslVersion = try std.fmt.bufPrintZ(&buf, "GL_SHADING_LANGUAGE_VERSION {d}", .{raylib.GL_SHADING_LANGUAGE_VERSION});
+    raylib.DrawText(
+        glslVersion,
+        100,
+        210,
+        20,
+        raylib.YELLOW,
+    );
 }

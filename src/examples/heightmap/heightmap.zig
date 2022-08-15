@@ -37,7 +37,7 @@ fn init(_: std.mem.Allocator) !void {
 
     mesh = raylib.GenMeshHeightmap(image, .{ .x = 16, .y = 8, .z = 16 });
     model = raylib.LoadModelFromMesh(mesh);
-    model.materials[0].maps[raylib.MATERIAL_MAP_DIFFUSE].texture = texture;
+    model.materials.?[0].maps.?[raylib.MATERIAL_MAP_DIFFUSE].texture = texture;
 
     raylib.SetCameraMode(camera, .CAMERA_ORBITAL);
     raylib.SetTargetFPS(60);

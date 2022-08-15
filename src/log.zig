@@ -8,24 +8,24 @@ const printBufferSize: usize = 1024 * 16;
 pub fn info(comptime fmt: []const u8, args: anytype) void {
     var buf: [printBufferSize]u8 = undefined;
     var fba = std.heap.FixedBufferAllocator.init(&buf);
-    infoAlloc(fba.allocator(), fmt, args) catch |err| {
-        std.debug.print("Error when log.info: {?}\n(your message is probably to long, please use 'infoAlloc' instead)\n", .{err});
+    infoAlloc(fba.allocator(), fmt, args) catch |errr| {
+        std.debug.print("Error when log.info: {?}\n(your message is probably to long, please use 'infoAlloc' instead)\n", .{errr});
     };
 }
 
 pub fn warn(comptime fmt: []const u8, args: anytype) void {
     var buf: [printBufferSize]u8 = undefined;
     var fba = std.heap.FixedBufferAllocator.init(&buf);
-    warnAlloc(fba.allocator(), fmt, args) catch |err| {
-        std.debug.print("Error when log.warn: {?}\n(your message is probably to long, please use 'warnAlloc' instead)\n", .{err});
+    warnAlloc(fba.allocator(), fmt, args) catch |errr| {
+        std.debug.print("Error when log.warn: {?}\n(your message is probably to long, please use 'warnAlloc' instead)\n", .{errr});
     };
 }
 
 pub fn err(comptime fmt: []const u8, args: anytype) void {
     var buf: [printBufferSize]u8 = undefined;
     var fba = std.heap.FixedBufferAllocator.init(&buf);
-    errAlloc(fba.allocator(), fmt, args) catch |err| {
-        std.debug.print("Error when log.err: {?}\n(your message is probably to long, please use 'errAlloc' instead)\n", .{err});
+    errAlloc(fba.allocator(), fmt, args) catch |errr| {
+        std.debug.print("Error when log.err: {?}\n(your message is probably to long, please use 'errAlloc' instead)\n", .{errr});
     };
 }
 
@@ -33,8 +33,8 @@ pub fn debug(comptime fmt: []const u8, args: anytype) void {
     if (builtin.mode == .Debug) {
         var buf: [printBufferSize]u8 = undefined;
         var fba = std.heap.FixedBufferAllocator.init(&buf);
-        debugAlloc(fba.allocator(), fmt, args) catch |err| {
-            std.debug.print("Error when log.debug: {?}\n(your message is probably to long, please use 'debugAlloc' instead)\n", .{err});
+        debugAlloc(fba.allocator(), fmt, args) catch |errr| {
+            std.debug.print("Error when log.debug: {?}\n(your message is probably to long, please use 'debugAlloc' instead)\n", .{errr});
         };
     }
 }
