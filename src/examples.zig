@@ -11,8 +11,8 @@ pub const exampleList: []const []const u8 = &.{
     "input_box",
     "heightmap",
     "3d_picking",
-    "rlgl_solar_system", 
-    "font_filters", 
+    "rlgl_solar_system",
+    "font_filters",
 };
 
 pub const examples = std.ComptimeStringMap(Example, .{

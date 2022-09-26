@@ -32,7 +32,7 @@ pub fn build(b: *std.build.Builder) !void {
                 return error.SysRootExpected;
             }
             const lib = b.addStaticLibrary(APP_NAME, "src/web.zig");
-            lib.addIncludeDir(raylibSrc);
+            lib.addIncludePath(raylibSrc);
 
             const emcc_file = switch (b.host.target.os.tag) {
                 .windows => "emcc.bat",
@@ -104,11 +104,11 @@ pub fn build(b: *std.build.Builder) !void {
             lib.defineCMacro("__EMSCRIPTEN__", null);
             lib.defineCMacro("PLATFORM_WEB", null);
             std.log.info("emscripten include path: {s}", .{include_path});
-            lib.addIncludeDir(include_path);
-            lib.addIncludeDir(emscriptenSrc);
-            lib.addIncludeDir(bindingSrc);
-            lib.addIncludeDir(raylibSrc);
-            lib.addIncludeDir(raylibSrc ++ "extras/");
+            lib.addIncludePath(include_path);
+            lib.addIncludePath(emscriptenSrc);
+            lib.addIncludePath(bindingSrc);
+            lib.addIncludePath(raylibSrc);
+            lib.addIncludePath(raylibSrc ++ "extras/");
 
             lib.setOutputDir(webCachedir);
             lib.install();
@@ -180,9 +180,9 @@ pub fn build(b: *std.build.Builder) !void {
             const rayBuild = @import("src/raylib/raylib/src/build.zig");
             const raylib = rayBuild.addRaylib(b, target);
             exe.linkLibrary(raylib);
-            exe.addIncludeDir(raylibSrc);
-            exe.addIncludeDir(raylibSrc ++ "extras/");
-            exe.addIncludeDir(bindingSrc);
+            exe.addIncludePath(raylibSrc);
+            exe.addIncludePath(raylibSrc ++ "extras/");
+            exe.addIncludePath(bindingSrc);
             exe.addCSourceFile(bindingSrc ++ "marshal.c", &.{});
 
             switch (raylib.target.getOsTag()) {
@@ -196,7 +196,7 @@ pub fn build(b: *std.build.Builder) !void {
                     exe.linkFramework("IOKit");
                 },
                 .linux => {
-                    exe.addLibPath("/usr/lib64/");
+                    exe.addLibraryPath("/usr/lib64/");
                     exe.linkSystemLibrary("GL");
                     exe.linkSystemLibrary("rt");
                     exe.linkSystemLibrary("dl");

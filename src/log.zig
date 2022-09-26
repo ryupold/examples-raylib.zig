@@ -61,7 +61,7 @@ fn printAlloc(allocator: Allocator, comptime logLevel: LogLevel, comptime fmt: [
     getPrintFn(logLevel)(s);
 }
 
-fn getPrintFn(comptime logLevel: LogLevel) fn ([:0]u8) void {
+fn getPrintFn(comptime logLevel: LogLevel) *const fn ([:0]u8) void {
     switch (builtin.os.tag) {
         .wasi, .emscripten, .freestanding => {
             return emscriptenPrint(logLevel);
@@ -72,7 +72,7 @@ fn getPrintFn(comptime logLevel: LogLevel) fn ([:0]u8) void {
     }
 }
 
-fn emscriptenPrint(comptime logLevel: LogLevel) fn ([:0]u8) void {
+fn emscriptenPrint(comptime logLevel: LogLevel) *const fn ([:0]u8) void {
     const emsdk = @cImport({
         @cDefine("__EMSCRIPTEN__", "1");
         @cInclude("emscripten/emscripten.h");
@@ -89,10 +89,10 @@ fn emscriptenPrint(comptime logLevel: LogLevel) fn ([:0]u8) void {
     }).print;
 }
 
-fn desktopPrint(comptime logLevel: LogLevel) fn ([:0]u8) void {
+fn desktopPrint(comptime logLevel: LogLevel) *const fn ([:0]u8) void {
     return (struct {
         pub fn print(s: [:0]u8) void {
-            const printFn: fn (comptime format: []const u8, args: anytype) void =
+            const printFn: *const fn (comptime format: []const u8, args: anytype) void =
                 switch (logLevel) {
                 .info => std.log.info,
                 .warn => std.log.warn,

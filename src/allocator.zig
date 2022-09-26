@@ -5,25 +5,25 @@ const log = @import("log.zig");
 const assert = std.debug.assert;
 
 const Allocator = std.mem.Allocator;
-var gpa = if (builtin.os.tag != .emscripten and builtin.os.tag != .wasi and builtin.mode != .ReleaseFast and builtin.mode != .ReleaseSmall) std.heap.GeneralPurposeAllocator(.{}){};
 
 pub const ZecsiAllocator =
     struct {
+    gpa: std.heap.GeneralPurposeAllocator(.{}) = if (builtin.os.tag != .emscripten and builtin.os.tag != .wasi and builtin.mode != .ReleaseFast and builtin.mode != .ReleaseSmall) std.heap.GeneralPurposeAllocator(.{}){} else undefined,
     const Self = @This();
-    pub fn allocator(_: *Self) Allocator {
+    pub fn allocator(self: *Self) Allocator {
         return switch (builtin.os.tag) {
             .emscripten, .wasi => Allocator{
                 .ptr = undefined,
                 .vtable = &e_allocator_vtable,
             },
             else => switch (builtin.mode) {
-                .Debug, .ReleaseSafe => gpa.allocator(),
+                .Debug, .ReleaseSafe => self.gpa.allocator(),
                 else => std.heap.c_allocator,
             },
         };
     }
 
-    pub fn deinit(_: *Self) bool {
+    pub fn deinit(self: *Self) bool {
         switch (builtin.os.tag) {
             .emscripten, .wasi => {
                 log.info("deinit not implemented for EmscriptenAllocator", .{});
@@ -31,7 +31,7 @@ pub const ZecsiAllocator =
             },
             else => {
                 return if (builtin.mode != .ReleaseFast and builtin.mode != .ReleaseSmall)
-                    gpa.deinit()
+                    self.gpa.deinit()
                 else
                     false;
             },

@@ -1,9 +1,9 @@
 const std = @import("std");
 
 pub const Example = struct {
-    initFn: fn (std.mem.Allocator) anyerror!void = init,
-    deinitFn: fn () void = deinit,
-    updateFn: fn (f32) anyerror!void = update,
+    initFn: *const fn (std.mem.Allocator) anyerror!void = init,
+    deinitFn: *const fn () void = deinit,
+    updateFn: *const fn (f32) anyerror!void = update,
 };
 
 fn init(allocator: std.mem.Allocator) !void {

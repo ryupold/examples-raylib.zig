@@ -11,7 +11,8 @@ var currentExample: Example = undefined;
 pub fn start(example: []const u8) !void {
     if (examples.get(example)) |e| {
         currentExample = e;
-        try currentExample.initFn(zalloc.allocator());
+        var allo = zalloc.allocator();
+        try currentExample.initFn(allo);
     }
 }
 
