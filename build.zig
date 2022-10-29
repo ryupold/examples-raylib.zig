@@ -138,10 +138,12 @@ pub fn build(b: *std.build.Builder) !void {
                 "--shell-file",
                 shell,
                 "-DPLATFORM_WEB",
-                "-sUSE_GLFW=3",
-                // "-sWASM=0",
+                                "-sUSE_GLFW=3",
+                "-sWASM=1",
                 "-sALLOW_MEMORY_GROWTH=1",
-                //"-sTOTAL_MEMORY=1024MB",
+                "-sWASM_MEM_MAX=512MB", //going higher than that seems not to work on iOS browsers ¯\_(ツ)_/¯
+                "-sTOTAL_MEMORY=512MB",
+                "-sABORTING_MALLOC=0",
                 "-sASYNCIFY",
                 "-sFORCE_FILESYSTEM=1",
                 "-sASSERTIONS=1",
@@ -150,6 +152,10 @@ pub fn build(b: *std.build.Builder) !void {
                 "--preload-file",
                 "assets",
                 "--source-map-base",
+                "-O1",
+                "-Os",
+                // "-sLLD_REPORT_UNDEFINED",
+                "-sERROR_ON_UNDEFINED_SYMBOLS=0",
 
                 // optimizations
                 "-O1",
