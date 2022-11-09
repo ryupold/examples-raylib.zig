@@ -5,6 +5,7 @@ const exampleList = @import("src/examples.zig").exampleList;
 pub const APP_NAME = "raylib-zig-examples";
 
 const raylibSrc = "src/raylib/raylib/src/";
+const rayguiSrc = "src/raygui/raygui/src/";
 const bindingSrc = "src/raylib/";
 
 pub fn build(b: *std.build.Builder) !void {
@@ -33,6 +34,7 @@ pub fn build(b: *std.build.Builder) !void {
             }
             const lib = b.addStaticLibrary(APP_NAME, "src/web.zig");
             lib.addIncludePath(raylibSrc);
+            lib.addIncludePath(rayguiSrc);
 
             const emcc_file = switch (b.host.target.os.tag) {
                 .windows => "emcc.bat",
@@ -68,6 +70,7 @@ pub fn build(b: *std.build.Builder) !void {
             const rmodelsO = b.addSystemCommand(&.{ emcc_path, "-Os", warnings, "-c", raylibSrc ++ "rmodels.c", "-o", webCachedir ++ "rmodels.o", "-Os", warnings, "-DPLATFORM_WEB", "-DGRAPHICS_API_OPENGL_ES2" });
             const utilsO = b.addSystemCommand(&.{ emcc_path, "-Os", warnings, "-c", raylibSrc ++ "utils.c", "-o", webCachedir ++ "utils.o", "-Os", warnings, "-DPLATFORM_WEB" });
             const raudioO = b.addSystemCommand(&.{ emcc_path, "-Os", warnings, "-c", raylibSrc ++ "raudio.c", "-o", webCachedir ++ "raudio.o", "-Os", warnings, "-DPLATFORM_WEB" });
+
             const libraylibA = b.addSystemCommand(&.{
                 emar_path,
                 "rcs",
@@ -107,7 +110,9 @@ pub fn build(b: *std.build.Builder) !void {
             lib.addIncludePath(include_path);
             lib.addIncludePath(emscriptenSrc);
             lib.addIncludePath(bindingSrc);
+            exe.addIncludePath("src/raygui");
             lib.addIncludePath(raylibSrc);
+            lib.addIncludePath(rayguiSrc);
             lib.addIncludePath(raylibSrc ++ "extras/");
 
             lib.setOutputDir(webCachedir);
@@ -125,12 +130,14 @@ pub fn build(b: *std.build.Builder) !void {
 
                 emscriptenSrc ++ "entry.c",
                 bindingSrc ++ "marshal.c",
+                "src/raygui/raygui_marshal.c",
 
                 webCachedir ++ "lib" ++ APP_NAME ++ ".a",
                 "-I.",
                 "-I" ++ raylibSrc,
                 "-I" ++ emscriptenSrc,
                 "-I" ++ bindingSrc,
+                "-Isrc/raygui/",
                 "-L.",
                 "-L" ++ webCachedir,
                 "-lraylib",
@@ -138,7 +145,8 @@ pub fn build(b: *std.build.Builder) !void {
                 "--shell-file",
                 shell,
                 "-DPLATFORM_WEB",
-                                "-sUSE_GLFW=3",
+                "-DRAYGUI_IMPLEMENTATION",
+                "-sUSE_GLFW=3",
                 "-sWASM=1",
                 "-sALLOW_MEMORY_GROWTH=1",
                 "-sWASM_MEM_MAX=512MB", //going higher than that seems not to work on iOS browsers ¯\_(ツ)_/¯
@@ -175,7 +183,7 @@ pub fn build(b: *std.build.Builder) !void {
             b.getInstallStep().dependOn(&emcc.step);
             //-------------------------------------------------------------------------------------
 
-            std.log.info("\n\nOutput files will be in {s}\n---\ncd {s}\npython -m http.server\n---\n\nbuilding...", .{webOutdir, webOutdir});
+            std.log.info("\n\nOutput files will be in {s}\n---\ncd {s}\npython -m http.server\n---\n\nbuilding...", .{ webOutdir, webOutdir });
         },
         else => {
             std.log.info("building for desktop\n", .{});
@@ -187,9 +195,12 @@ pub fn build(b: *std.build.Builder) !void {
             const raylib = rayBuild.addRaylib(b, target);
             exe.linkLibrary(raylib);
             exe.addIncludePath(raylibSrc);
+            exe.addIncludePath(rayguiSrc);
             exe.addIncludePath(raylibSrc ++ "extras/");
             exe.addIncludePath(bindingSrc);
+            exe.addIncludePath("src/raygui");
             exe.addCSourceFile(bindingSrc ++ "marshal.c", &.{});
+            exe.addCSourceFile("src/raygui/raygui_marshal.c", &.{"-DRAYGUI_IMPLEMENTATION"});
 
             switch (raylib.target.getOsTag()) {
                 //dunno why but macos target needs sometimes 2 tries to build
@@ -247,7 +258,7 @@ fn promptExample() !void {
 
         const option = reader.readUntilDelimiterOrEofAlloc(fba.allocator(), '\n', buf.len) catch continue;
         const nr = std.fmt.parseInt(usize, std.mem.trim(u8, option.?, " \t\n\r"), 10) catch |err| {
-            std.log.err("{?} in input: {?s}", .{err, option});
+            std.log.err("{?} in input: {?s}", .{ err, option });
             continue;
         };
         fba.reset();
