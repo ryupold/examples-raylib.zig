@@ -110,7 +110,7 @@ pub fn build(b: *std.build.Builder) !void {
             lib.addIncludePath(include_path);
             lib.addIncludePath(emscriptenSrc);
             lib.addIncludePath(bindingSrc);
-            exe.addIncludePath("src/raygui");
+            lib.addIncludePath("src/raygui");
             lib.addIncludePath(raylibSrc);
             lib.addIncludePath(rayguiSrc);
             lib.addIncludePath(raylibSrc ++ "extras/");

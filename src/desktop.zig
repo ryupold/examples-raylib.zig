@@ -10,6 +10,9 @@ pub fn main() anyerror!void {
     defer game.stop();
 
     while (!raylib.WindowShouldClose()) {
-        game.loop(raylib.GetFrameTime());
+        game.loop(raylib.GetFrameTime()) catch |err| {
+            if(err == error.Exit) break;
+            log.err("ERROR: {?}", .{err});
+        };
     }
 }

@@ -24,6 +24,6 @@ pub fn stop() void {
     }
 }
 
-pub fn loop(dt: f32) void {
-    currentExample.updateFn(dt) catch |err| log.err("ERROR: {?}", .{err});
+pub fn loop(dt: f32) !void {
+    try currentExample.updateFn(dt);
 }

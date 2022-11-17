@@ -31,5 +31,5 @@ fn safeMain() !c_int {
 }
 
 export fn gameLoop() callconv(.C) void {
-    game.loop(raylib.GetFrameTime());
+    game.loop(raylib.GetFrameTime()) catch |err| log.err("ERROR: {?}", .{err});
 }
