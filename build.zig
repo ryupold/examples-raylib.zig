@@ -135,6 +135,7 @@ pub fn build(b: *std.build.Builder) !void {
                 webCachedir ++ "lib" ++ APP_NAME ++ ".a",
                 "-I.",
                 "-I" ++ raylibSrc,
+                "-I" ++ rayguiSrc,
                 "-I" ++ emscriptenSrc,
                 "-I" ++ bindingSrc,
                 "-Isrc/raygui/",
