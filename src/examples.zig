@@ -14,6 +14,7 @@ pub const exampleList: []const []const u8 = &.{
     "rlgl_solar_system",
     "font_filters",
     "raygui",
+    "input_gamepad",
 };
 
 pub const examples = std.ComptimeStringMap(Example, .{
@@ -29,4 +30,5 @@ pub const examples = std.ComptimeStringMap(Example, .{
     .{ "rlgl_solar_system", @import("examples/rlgl_solar_system/rlgl_solar_system.zig").example },
     .{ "font_filters", @import("examples/font_filters/font_filters.zig").example },
     .{ "raygui", @import("examples/raygui/raygui.zig").example },
+    .{ "input_gamepad", @import("examples/input_gamepad/input_gamepad.zig").example },
 });
