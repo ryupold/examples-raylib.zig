@@ -12,7 +12,7 @@ This is a collection of examples using the Zig raylib bindings of [raylib.zig](h
 ## examples
 During build you will be asked which example should be executed. The example code can be found in `./src/examples`.
 
-You can test the WebGL examples [here](https://ryupold.de/pages/raylib.zig/raylib.zig.html).
+You can test the WebGL examples [here](https://ryupold.de/?post=raylib.zig).
 
 ## BUILD
 
