@@ -39,13 +39,12 @@ fn init(_: std.mem.Allocator) !void {
     model = raylib.LoadModelFromMesh(mesh);
     model.materials.?[0].maps.?[raylib.MATERIAL_MAP_DIFFUSE].texture = texture;
 
-    raylib.SetCameraMode(camera, .CAMERA_ORBITAL);
     raylib.SetTargetFPS(60);
 }
 
 fn update(_: f32) !void {
     //Update
-    raylib.UpdateCamera(&camera);
+    raylib.UpdateCamera(&camera, .CAMERA_ORBITAL);
 
     //Draw
     {

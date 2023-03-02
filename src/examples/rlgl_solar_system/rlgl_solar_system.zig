@@ -36,13 +36,12 @@ var moonOrbitRotation: f32 = 0;
 fn init(_: std.mem.Allocator) !void {
     raylib.InitWindow(screenWidth, screenHeight, "raylib [models] example - rlgl module usage with push/pop matrix transformations");
 
-    raylib.SetCameraMode(camera, .CAMERA_FREE);
     raylib.SetTargetFPS(60);
 }
 
 fn update(_: f32) !void {
     //Update
-    raylib.UpdateCamera(&camera);
+    raylib.UpdateCamera(&camera, .CAMERA_ORBITAL);
 
     earthRotation += (5 * rotationSpeed);
     earthOrbitRotation += (365.0 / 360.0 * (5 * rotationSpeed) * rotationSpeed);

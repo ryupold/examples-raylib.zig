@@ -19,7 +19,7 @@ pub fn build(b: *std.build.Builder) !void {
 
     // Standard release options allow the person running `zig build` to select
     // between Debug, ReleaseSafe, ReleaseFast, and ReleaseSmall.
-    const mode = b.standardReleaseOptions();
+    const mode = b.standardOptimizeOption(.{});
 
     switch (target.getOsTag()) {
         .wasi, .emscripten => {
@@ -32,7 +32,12 @@ pub fn build(b: *std.build.Builder) !void {
                 std.log.err("\n\nUSAGE: Please build with 'zig build -Drelease-small -Dtarget=wasm32-wasi --sysroot \"$EMSDK/upstream/emscripten\"'\n\n", .{});
                 return error.SysRootExpected;
             }
-            const lib = b.addStaticLibrary(APP_NAME, "src/web.zig");
+            const lib = b.addStaticLibrary(.{
+                .name = APP_NAME,
+                .root_source_file = std.build.FileSource.relative("src/web.zig"),
+                .optimize = mode,
+                .target = target,
+            });
             lib.addIncludePath(raylibSrc);
             lib.addIncludePath(rayguiSrc);
 
@@ -102,8 +107,8 @@ pub fn build(b: *std.build.Builder) !void {
                 lib.step.dependOn(&emranlib.step);
             };
 
-            lib.setTarget(target);
-            lib.setBuildMode(mode);
+            // lib.setTarget(target);
+            // lib.setBuildMode(mode);
             lib.defineCMacro("__EMSCRIPTEN__", null);
             lib.defineCMacro("PLATFORM_WEB", null);
             std.log.info("emscripten include path: {s}", .{include_path});
@@ -188,12 +193,15 @@ pub fn build(b: *std.build.Builder) !void {
         },
         else => {
             std.log.info("building for desktop\n", .{});
-            const exe = b.addExecutable(APP_NAME, "src/desktop.zig");
-            exe.setTarget(target);
-            exe.setBuildMode(mode);
+            const exe = b.addExecutable(.{
+                .name = APP_NAME,
+                .root_source_file = std.build.FileSource.relative("src/desktop.zig"),
+                .optimize = mode,
+                .target = target,
+            });
 
             const rayBuild = @import("src/raylib/raylib/src/build.zig");
-            const raylib = rayBuild.addRaylib(b, target);
+            const raylib = rayBuild.addRaylib(b, target, mode);
             exe.linkLibrary(raylib);
             exe.addIncludePath(raylibSrc);
             exe.addIncludePath(rayguiSrc);
@@ -248,7 +256,7 @@ fn promptExample() !void {
         var writer = output.writer();
 
         try writer.writeAll("\n\nExamples:\n--------------------------------------------------\n");
-        for (exampleList) |example, i| {
+        for (exampleList, 0..) |example, i| {
             defer fba.reset();
             try writer.writeAll(try std.fmt.allocPrint(fba.allocator(), "{d}:\t{s}\n", .{ i + 1, example }));
         }
@@ -264,8 +272,8 @@ fn promptExample() !void {
         };
         fba.reset();
 
-        for (exampleList) |example, i| {
-            if (nr == i + 1) {
+        for (exampleList, 1..) |example, i| {
+            if (nr == i) {
                 var load_example = try std.fs.cwd().createFile("src/load_example.zig", .{});
                 defer load_example.close();
                 try load_example.writeAll(try std.fmt.allocPrint(fba.allocator(), "pub const name = \"{s}\";\n", .{example}));

@@ -27,13 +27,12 @@ var collision = std.mem.zeroes(raylib.RayCollision);
 
 fn init(_: std.mem.Allocator) !void {
     raylib.InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d picking");
-    raylib.SetCameraMode(camera, .CAMERA_FREE);
     raylib.SetTargetFPS(60);
 }
 
 fn update(_: f32) !void {
     // Update
-    raylib.UpdateCamera(&camera);
+    raylib.UpdateCamera(&camera, .CAMERA_FREE);
 
     if (raylib.IsMouseButtonPressed(.MOUSE_BUTTON_LEFT)) {
         if (!collision.hit) {

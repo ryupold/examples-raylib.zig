@@ -32,14 +32,13 @@ var cubePosition: Vector3 = .{ .x = 0, .y = 0, .z = 0 };
 
 fn init(_: std.mem.Allocator) !void {
     raylib.InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera free");
-    raylib.SetCameraMode(camera, .CAMERA_FREE);
     raylib.SetTargetFPS(60);
 }
 
 fn update(_: f32) !void {
     if (raylib.IsKeyDown(.KEY_Z))
         camera.target = .{ .x = 0.0, .y = 0.0, .z = 0.0 };
-    raylib.UpdateCamera(&camera);
+    raylib.UpdateCamera(&camera, .CAMERA_FREE);
 
     raylib.BeginDrawing();
     defer raylib.EndDrawing();
