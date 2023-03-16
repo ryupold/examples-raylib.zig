@@ -30,6 +30,7 @@ var lights: [maxLights]Light = undefined;
 var lightLocations: [maxLights]LightLocation = undefined;
 
 fn init(_: std.mem.Allocator) !void {
+    raylib.SetConfigFlags(.FLAG_MSAA_4X_HINT);
     raylib.InitWindow(screenWidth, screenHeight, "raylib [shaders] example - basic lighting");
     raylib.SetTargetFPS(60);
 
@@ -43,11 +44,15 @@ fn init(_: std.mem.Allocator) !void {
     cube = raylib.LoadModelFromMesh(raylib.GenMeshCube(2.0, 4.0, 2));
 
     var buf: [4096]u8 = undefined;
+    var fba = std.heap.FixedBufferAllocator.init(&buf);
+    
     shader = raylib.LoadShader(
-        try std.fmt.bufPrintZ(&buf, "assets/shaders/glsl{d}/lighting.vs", .{glslVersion}),
-        try std.fmt.bufPrintZ(&buf, "assets/shaders/glsl{d}/lighting.fs", .{glslVersion}),
+        try std.fmt.allocPrintZ(fba.allocator(), "assets/shaders/glsl{d}/lighting.vs", .{glslVersion}),
+        try std.fmt.allocPrintZ(fba.allocator(), "assets/shaders/glsl{d}/lighting.fs", .{glslVersion}),
     );
+
     shader.locs.?[@enumToInt(raylib.ShaderLocationIndex.SHADER_LOC_VECTOR_VIEW)] = raylib.GetShaderLocation(shader, "viewPos");
+
     ambientLoc = raylib.GetShaderLocation(shader, "ambient");
     var newAmbientLoc = [4]f32{ 0.1, 0.1, 0.1, 1.0 };
     raylib.SetShaderValue(
@@ -119,7 +124,7 @@ fn update(_: f32) !void {
                 if (lights[i].enabled) {
                     raylib.DrawSphereEx(lights[i].position, 0.2, 8, 8, raylib.ColorAlpha(lights[i].color, 0.3));
                 } else {
-                    raylib.DrawSphereEx(lights[i].position, 0.2, 8, 8, raylib.ColorAlpha(raylib.GRAY, 0.3));
+                    raylib.DrawSphereWires(lights[i].position, 0.2, 8, 8, raylib.ColorAlpha(raylib.GRAY, 0.3));
                 }
             }
 
@@ -154,12 +159,12 @@ fn createLight(typ: LightType, position: raylib.Vector3, target: raylib.Vector3,
         // .attenuation = 0,
 
         // NOTE: Lighting shader naming must be the provided ones
-       
+
     };
 
     var buf: [4096]u8 = undefined;
-    var lightLocation = LightLocation {
-         .enabledLoc = raylib.GetShaderLocation(shadr, try std.fmt.bufPrintZ(&buf, "lights[{d}].enabled", .{lightsCount})),
+    var lightLocation = LightLocation{
+        .enabledLoc = raylib.GetShaderLocation(shadr, try std.fmt.bufPrintZ(&buf, "lights[{d}].enabled", .{lightsCount})),
         .typeLoc = raylib.GetShaderLocation(shadr, try std.fmt.bufPrintZ(&buf, "lights[{d}].type", .{lightsCount})),
         .positionLoc = raylib.GetShaderLocation(shadr, try std.fmt.bufPrintZ(&buf, "lights[{d}].position", .{lightsCount})),
         .targetLoc = raylib.GetShaderLocation(shadr, try std.fmt.bufPrintZ(&buf, "lights[{d}].target", .{lightsCount})),
@@ -178,7 +183,7 @@ fn createLight(typ: LightType, position: raylib.Vector3, target: raylib.Vector3,
 /// NOTE: Light shader locations should be available
 fn updateLightValues(shadr: raylib.Shader, light: Light, lightLocation: LightLocation) void {
     // Send to shader light enabled state and type
-    var le: u8 = if (light.enabled) 1 else 0;
+    var le: i32 = if (light.enabled) 1 else 0;
     raylib.SetShaderValue(shadr, lightLocation.enabledLoc, &le, .SHADER_UNIFORM_INT);
     raylib.SetShaderValue(shadr, lightLocation.typeLoc, &light.type, .SHADER_UNIFORM_INT);
 
