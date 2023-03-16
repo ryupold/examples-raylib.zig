@@ -29,7 +29,7 @@ pub fn build(b: *std.build.Builder) !void {
 
             std.log.info("building for emscripten\n", .{});
             if (b.sysroot == null) {
-                std.log.err("\n\nUSAGE: Please build with 'zig build -Drelease-small -Dtarget=wasm32-wasi --sysroot \"$EMSDK/upstream/emscripten\"'\n\n", .{});
+                std.log.err("\n\nUSAGE: Please build with 'zig build -Doptimize=ReleaseSmall -Dtarget=wasm32-wasi --sysroot \"$EMSDK/upstream/emscripten\"'\n\n", .{});
                 return error.SysRootExpected;
             }
             const lib = b.addStaticLibrary(.{

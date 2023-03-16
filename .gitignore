@@ -6,3 +6,5 @@ zig-out/
 .env
 
 src/load_example.zig
+
+.DS_Store
