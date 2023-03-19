@@ -16,6 +16,7 @@ pub const exampleList: []const []const u8 = &.{
     "raygui",
     "input_gamepad",
     "basic_lighning",
+    "image_drawing",
 };
 
 pub const examples = std.ComptimeStringMap(Example, .{
@@ -33,4 +34,5 @@ pub const examples = std.ComptimeStringMap(Example, .{
     .{ "raygui", @import("examples/raygui/raygui.zig").example },
     .{ "input_gamepad", @import("examples/input_gamepad/input_gamepad.zig").example },
     .{ "basic_lighning", @import("examples/basic_lighning/basic_lighning.zig").example },
+    .{ "image_drawing", @import("examples/image_drawing/image_drawing.zig").example },
 });
