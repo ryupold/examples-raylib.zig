@@ -13,7 +13,7 @@ pub const example = Example{
 const maxLights = 4;
 const screenWidth: i32 = 800;
 const screenHeight: i32 = 450;
-const glslVersion = 330;
+const glslVersion = 100;
 
 // #if defined(PLATFORM_DESKTOP)
 //     #define GLSL_VERSION            330
