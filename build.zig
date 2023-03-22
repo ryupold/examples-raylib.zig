@@ -8,7 +8,7 @@ const raylibSrc = "src/raylib/raylib/src/";
 const rayguiSrc = "src/raygui/raygui/src/";
 const bindingSrc = "src/raylib/";
 
-pub fn build(b: *std.build.Builder) !void {
+pub fn build(b: *std.Build) !void {
     try promptExample();
 
     // Standard target options allows the person running `zig build` to choose
