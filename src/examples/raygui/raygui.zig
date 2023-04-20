@@ -183,10 +183,6 @@ fn update(_: f32) !void {
 
         toggleGroupActive = raygui.GuiToggleGroup(.{ .x = 165, .y = 400, .width = 140, .height = 25 }, "#1#ONE\n#3#TWO\n#8#THREE\n#23#", toggleGroupActive);
 
-        // Third GUI column
-        if (raygui.GuiTextBoxMulti(.{ .x = 320, .y = 25, .width = 225, .height = 140 }, &multiTextBoxText, 256, multiTextBoxEditMode)) multiTextBoxEditMode = !multiTextBoxEditMode;
-        colorPickerValue = raygui.GuiColorPicker(.{ .x = 320, .y = 185, .width = 196, .height = 192 }, "", colorPickerValue);
-
         sliderValue = raygui.GuiSlider(.{ .x = 355, .y = 400, .width = 165, .height = 20 }, "TEST", try raylib.TextFormat(fba.allocator(), "{d}", .{sliderValue}), sliderValue, -50, 100);
         sliderBarValue = raygui.GuiSliderBar(.{ .x = 320, .y = 430, .width = 200, .height = 20 }, "", try raylib.TextFormat(fba.allocator(), "{d}", .{sliderBarValue}), sliderBarValue, 0, 100);
         progressValue = raygui.GuiProgressBar(.{ .x = 320, .y = 460, .width = 200, .height = 20 }, "", "", progressValue, 0, 1);
