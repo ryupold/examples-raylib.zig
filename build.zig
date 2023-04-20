@@ -107,8 +107,6 @@ pub fn build(b: *std.Build) !void {
                 lib.step.dependOn(&emranlib.step);
             };
 
-            // lib.setTarget(target);
-            // lib.setBuildMode(mode);
             lib.defineCMacro("__EMSCRIPTEN__", null);
             lib.defineCMacro("PLATFORM_WEB", null);
             std.log.info("emscripten include path: {s}", .{include_path});
@@ -120,8 +118,9 @@ pub fn build(b: *std.Build) !void {
             lib.addIncludePath(rayguiSrc);
             lib.addIncludePath(raylibSrc ++ "extras/");
 
-            lib.setOutputDir(webCachedir);
-            lib.install();
+            const libraryOutputFolder = "zig-out/lib/";
+            // this installs the lib (libraylib-zig-examples.a) to the `libraryOutputFolder` folder
+            b.installArtifact(lib);
 
             const shell = switch (mode) {
                 .Debug => emscriptenSrc ++ "shell.html",
@@ -137,7 +136,7 @@ pub fn build(b: *std.Build) !void {
                 bindingSrc ++ "marshal.c",
                 "src/raygui/raygui_marshal.c",
 
-                webCachedir ++ "lib" ++ APP_NAME ++ ".a",
+                libraryOutputFolder ++ "lib" ++ APP_NAME ++ ".a",
                 "-I.",
                 "-I" ++ raylibSrc,
                 "-I" ++ rayguiSrc,
@@ -146,6 +145,7 @@ pub fn build(b: *std.Build) !void {
                 "-Isrc/raygui/",
                 "-L.",
                 "-L" ++ webCachedir,
+                "-L" ++ libraryOutputFolder,
                 "-lraylib",
                 "-l" ++ APP_NAME,
                 "--shell-file",
@@ -233,9 +233,9 @@ pub fn build(b: *std.Build) !void {
             }
 
             exe.linkLibC();
-            exe.install();
+            b.installArtifact(exe);
 
-            const run_cmd = exe.run();
+            const run_cmd = b.addRunArtifact(exe);
             run_cmd.step.dependOn(b.getInstallStep());
             if (b.args) |args| {
                 run_cmd.addArgs(args);

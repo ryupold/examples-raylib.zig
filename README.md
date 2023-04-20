@@ -37,14 +37,18 @@ zig build run
 zig build -Doptimize=ReleaseSmall
 ```
 
+
 The output files will be in `./zig-out/bin`
 
 ### html5 / emscripten
 
 ```sh
-EMSDK=../emsdk #path to emscripten sdk
+cd <emscripten directory>
 
-zig build -Doptimize=ReleaseSmall -Dtarget=wasm32-wasi --sysroot "$EMSDK/upstream/emscripten"
+./emsdk_env.ps1 # windows
+./emsdk_env.sh # linux / macos
+
+zig build -Doptimize=ReleaseSmall -Dtarget=wasm32-wasi --sysroot "<emscripten directory>/upstream/emscripten"
 ```
 
 The output files will be in `./zig-out/web/`
