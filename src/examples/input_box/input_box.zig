@@ -57,8 +57,9 @@ fn update(_: f32) !void {
         }
 
         if (raylib.IsKeyPressed(.KEY_BACKSPACE)) {
-            letterCount -= 1;
-            if (letterCount < 0) letterCount = 0;
+            if (letterCount > 0) {
+                letterCount -= 1;
+            }
             name[letterCount] = 0;
         }
     } else {
