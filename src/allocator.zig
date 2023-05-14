@@ -31,7 +31,7 @@ pub const ZecsiAllocator =
             },
             else => {
                 return if (builtin.mode != .ReleaseFast and builtin.mode != .ReleaseSmall)
-                    gpa.deinit()
+                    gpa.deinit() == .leak
                 else
                     false;
             },
