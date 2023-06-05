@@ -10,7 +10,7 @@ pub const example = Example{
 fn init(_: std.mem.Allocator) !void {
     raylib.InitWindow(800, 800, "hello world!");
 
-    raylib.SetConfigFlags(.FLAG_WINDOW_RESIZABLE);
+    raylib.SetConfigFlags(.{ .FLAG_WINDOW_RESIZABLE = true });
     raylib.SetTargetFPS(60);
 }
 
@@ -28,8 +28,8 @@ fn update(_: f32) !void {
         30,
         raylib.YELLOW,
     );
-    var buf : [1024]u8 = undefined;
-    
+    var buf: [1024]u8 = undefined;
+
     const raylibVersion = try std.fmt.bufPrintZ(&buf, "raylib {s}", .{raylib.RAYLIB_VERSION});
     raylib.DrawText(
         raylibVersion,
@@ -38,7 +38,7 @@ fn update(_: f32) !void {
         20,
         raylib.YELLOW,
     );
-    
+
     const rlGlVersion = try std.fmt.bufPrintZ(&buf, "rlgl {s}", .{raylib.RLGL_VERSION});
     raylib.DrawText(
         rlGlVersion,

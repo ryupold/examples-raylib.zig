@@ -17,7 +17,7 @@ var start: raylib.Vector2 = .{ .x = 0, .y = 0 };
 var end: raylib.Vector2 = .{ .x = @intToFloat(f32, screenWidth), .y = @intToFloat(f32, screenHeight) };
 
 fn init(_: std.mem.Allocator) !void {
-    raylib.SetConfigFlags(.FLAG_MSAA_4X_HINT);
+    raylib.SetConfigFlags(.{ .FLAG_MSAA_4X_HINT = true });
     raylib.InitWindow(screenWidth, screenHeight, "raylib [shapes] example - cubic-bezier lines");
     raylib.SetTargetFPS(60);
 }

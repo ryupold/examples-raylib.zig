@@ -30,7 +30,7 @@ var lights: [maxLights]Light = undefined;
 var lightLocations: [maxLights]LightLocation = undefined;
 
 fn init(_: std.mem.Allocator) !void {
-    raylib.SetConfigFlags(.FLAG_MSAA_4X_HINT);
+    raylib.SetConfigFlags(.{ .FLAG_MSAA_4X_HINT = true });
     raylib.InitWindow(screenWidth, screenHeight, "raylib [shaders] example - basic lighting");
     raylib.SetTargetFPS(60);
 
@@ -45,7 +45,7 @@ fn init(_: std.mem.Allocator) !void {
 
     var buf: [4096]u8 = undefined;
     var fba = std.heap.FixedBufferAllocator.init(&buf);
-    
+
     shader = raylib.LoadShader(
         try std.fmt.allocPrintZ(fba.allocator(), "assets/shaders/glsl{d}/lighting.vs", .{glslVersion}),
         try std.fmt.allocPrintZ(fba.allocator(), "assets/shaders/glsl{d}/lighting.fs", .{glslVersion}),

@@ -27,7 +27,7 @@ var texXboxPad: raylib.Texture2D = undefined;
 fn init(_: std.mem.Allocator) !void {
     raylib.InitWindow(screenWidth, screenHeight, "raylib [core] example - input gamepad");
     raylib.SetTargetFPS(60);
-    raylib.SetConfigFlags(.FLAG_MSAA_4X_HINT);
+    raylib.SetConfigFlags(.{ .FLAG_MSAA_4X_HINT = true });
 
     texPs3Pad = raylib.LoadTexture("assets/ps3.png");
     texXboxPad = raylib.LoadTexture("assets/xbox.png");
