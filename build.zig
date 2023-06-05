@@ -201,7 +201,7 @@ pub fn build(b: *std.Build) !void {
             });
 
             const rayBuild = @import("src/raylib/raylib/src/build.zig");
-            const raylib = rayBuild.addRaylib(b, target);
+            const raylib = rayBuild.addRaylib(b, target, mode);
             exe.linkLibrary(raylib);
             exe.addIncludePath(raylibSrc);
             exe.addIncludePath(rayguiSrc);
@@ -212,7 +212,6 @@ pub fn build(b: *std.Build) !void {
             exe.addCSourceFile("src/raygui/raygui_marshal.c", &.{"-DRAYGUI_IMPLEMENTATION"});
 
             switch (raylib.target.getOsTag()) {
-                //dunno why but macos target needs sometimes 2 tries to build
                 .macos => {
                     exe.linkFramework("Foundation");
                     exe.linkFramework("Cocoa");
