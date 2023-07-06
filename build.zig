@@ -201,7 +201,7 @@ pub fn build(b: *std.Build) !void {
             });
 
             const rayBuild = @import("src/raylib/raylib/src/build.zig");
-            const raylib = rayBuild.addRaylib(b, target, mode);
+            const raylib = rayBuild.addRaylib(b, target, mode, .{});
             exe.linkLibrary(raylib);
             exe.addIncludePath(raylibSrc);
             exe.addIncludePath(rayguiSrc);
