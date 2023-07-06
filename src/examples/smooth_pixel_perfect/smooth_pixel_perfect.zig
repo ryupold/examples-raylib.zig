@@ -19,7 +19,7 @@ const screenHeight: i32 = 450;
 const virtualScreenWidth: i32 = 160;
 const virtualScreenHeight: i32 = 90;
 
-const virtualRatio = @intToFloat(f32, screenWidth) / @intToFloat(f32, virtualScreenWidth);
+const virtualRatio = @as(f32, @floatFromInt(screenWidth)) / @as(f32, @floatFromInt(virtualScreenWidth));
 var worldSpaceCamera: raylib.Camera2D = .{
     .target = raylib.Vector2.zero(),
     .zoom = 1,
@@ -36,8 +36,8 @@ var sourceRec: Rectangle = undefined;
 var destRec = Rectangle{
     .x = -virtualRatio,
     .y = -virtualRatio,
-    .width = @intToFloat(f32, screenWidth) + (virtualRatio * 2),
-    .height = @intToFloat(f32, screenHeight) + (virtualRatio * 2),
+    .width = @as(f32, @floatFromInt(screenWidth)) + (virtualRatio * 2),
+    .height = @as(f32, @floatFromInt(screenHeight)) + (virtualRatio * 2),
 };
 
 var origin = Vector2{ .x = 0, .y = 0 };
@@ -55,8 +55,8 @@ fn init(_: std.mem.Allocator) !void {
     sourceRec = .{
         .x = 0,
         .y = 0,
-        .width = @intToFloat(f32, target.texture.width),
-        .height = @intToFloat(f32, -target.texture.height),
+        .width = @as(f32, @floatFromInt(target.texture.width)),
+        .height = @as(f32, @floatFromInt(-target.texture.height)),
     };
 
     raylib.SetTargetFPS(60);
@@ -69,8 +69,8 @@ fn update(_: f32) !void {
 
     // Make the camera move to demonstrate the effect
     rotation += 60.0 * raylib.GetFrameTime();
-    cameraX = std.math.sin(@floatCast(f32, raylib.GetTime())) * 50 - 10;
-    cameraY = std.math.cos(@floatCast(f32, raylib.GetTime())) * 30;
+    cameraX = std.math.sin(@as(f32, @floatCast(raylib.GetTime()))) * 50 - 10;
+    cameraY = std.math.cos(@as(f32, @floatCast(raylib.GetTime()))) * 30;
 
     // Set the camera's target to the values computed above
     screenSpaceCamera.target = .{ .x = cameraX, .y = cameraY };

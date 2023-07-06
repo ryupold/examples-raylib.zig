@@ -28,7 +28,7 @@ fn init(_: std.mem.Allocator) !void {
 
     // rectangle floor
     var floor = raylib.CreatePhysicsBodyRectangle(
-        .{ .x = @intToFloat(f32, screenWidth) / 2, .y = @intToFloat(f32, screenHeight) },
+        .{ .x = @as(f32, @floatFromInt(screenWidth)) / 2, .y = @as(f32, @floatFromInt(screenHeight)) },
         500,
         100,
         10,
@@ -38,7 +38,7 @@ fn init(_: std.mem.Allocator) !void {
 
     // static circle in the middle
     var circle = raylib.CreatePhysicsBodyCircle(
-        .{ .x = @intToFloat(f32, screenWidth) / 2, .y = @intToFloat(f32, screenHeight) / 2 },
+        .{ .x = @as(f32, @floatFromInt(screenWidth)) / 2, .y = @as(f32, @floatFromInt(screenHeight)) / 2 },
         45,
         10,
     );
@@ -52,9 +52,9 @@ fn update(_: f32) !void {
 
     if (raylib.IsKeyPressed(.KEY_R)) {
         raylib.ResetPhysics();
-        var floor = raylib.CreatePhysicsBodyRectangle(.{ .x = @intToFloat(f32, screenWidth) / 2, .y = @intToFloat(f32, screenHeight) }, 500, 100, 10);
+        var floor = raylib.CreatePhysicsBodyRectangle(.{ .x = @as(f32, @floatFromInt(screenWidth)) / 2, .y = @as(f32, @floatFromInt(screenHeight)) }, 500, 100, 10);
         floor.enabled = false;
-        var circle = raylib.CreatePhysicsBodyCircle(.{ .x = @intToFloat(f32, screenWidth) / 2, .y = @intToFloat(f32, screenHeight) / 2 }, 45, 10);
+        var circle = raylib.CreatePhysicsBodyCircle(.{ .x = @as(f32, @floatFromInt(screenWidth)) / 2, .y = @as(f32, @floatFromInt(screenHeight)) / 2 }, 45, 10);
         circle.enabled = false;
     }
 
@@ -62,14 +62,14 @@ fn update(_: f32) !void {
     if (raylib.IsMouseButtonPressed(.MOUSE_BUTTON_LEFT)) {
         _ = raylib.CreatePhysicsBodyPolygon(
             raylib.GetMousePosition(),
-            @intToFloat(f32, raylib.GetRandomValue(20, 80)),
+            @as(f32, @floatFromInt(raylib.GetRandomValue(20, 80))),
             raylib.GetRandomValue(3, 8),
             10,
         );
     } else if (raylib.IsMouseButtonPressed(.MOUSE_BUTTON_RIGHT)) {
         _ = raylib.CreatePhysicsBodyCircle(
             raylib.GetMousePosition(),
-            @intToFloat(f32, raylib.GetRandomValue(10, 45)),
+            @as(f32, @floatFromInt(raylib.GetRandomValue(10, 45))),
             10,
         );
     }
@@ -78,7 +78,7 @@ fn update(_: f32) !void {
     var bodiesCount = raylib.GetPhysicsBodiesCount() - 1;
     while (bodiesCount >= 0) : (bodiesCount -= 1) {
         if (raylib.GetPhysicsBody(bodiesCount)) |body| {
-            if (body.position.y > @intToFloat(f32, screenHeight * 2)) {
+            if (body.position.y > @as(f32, @floatFromInt(screenHeight * 2))) {
                 raylib.DestroyPhysicsBody(body);
             }
         }

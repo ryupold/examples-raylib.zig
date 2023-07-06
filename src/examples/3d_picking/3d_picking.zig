@@ -91,7 +91,7 @@ fn update(_: f32) !void {
             if (collision.hit) raylib.DrawText(
                 "BOX SELECTED",
                 @divTrunc((screenWidth - raylib.MeasureText("BOX SELECTED", 30)), 2),
-                @floatToInt(i32, @intToFloat(f32, screenHeight) * 0.1),
+                @as(i32, @as(f32, @floatFromInt(screenHeight)) * 0.1),
                 30,
                 raylib.GREEN,
             );

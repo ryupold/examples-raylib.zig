@@ -40,13 +40,13 @@ fn init(_: std.mem.Allocator) !void {
     raylib.ImageDraw(
         &parrots,
         cat,
-        .{ .x = 0, .y = 0, .width = @intToFloat(f32, cat.width), .height = @intToFloat(f32, cat.height) },
-        .{ .x = 30, .y = 40, .width = @intToFloat(f32, cat.width) * 1.5, .height = @intToFloat(f32, cat.height) * 1.5 },
+        .{ .x = 0, .y = 0, .width = @as(f32, @floatFromInt(cat.width)), .height = @as(f32, @floatFromInt(cat.height)) },
+        .{ .x = 30, .y = 40, .width = @as(f32, @floatFromInt(cat.width)) * 1.5, .height = @as(f32, @floatFromInt(cat.height)) * 1.5 },
         raylib.WHITE,
     );
     raylib.ImageCrop(
         &parrots,
-        .{ .x = 0, .y = 50, .width = @intToFloat(f32, parrots.width), .height = @intToFloat(f32, parrots.height - 100) },
+        .{ .x = 0, .y = 50, .width = @as(f32, @floatFromInt(parrots.width)), .height = @as(f32, @floatFromInt(parrots.height - 100)) },
     );
 
     // Draw on the image with a few image draw methods
@@ -59,7 +59,7 @@ fn init(_: std.mem.Allocator) !void {
     defer raylib.UnloadFont(font);
 
     // Draw over image using custom font
-    raylib.ImageDrawTextEx(&parrots, font, "PARROTS & CAT", .{ .x = 300, .y = 230 }, @intToFloat(f32, font.baseSize), -2, raylib.WHITE);
+    raylib.ImageDrawTextEx(&parrots, font, "PARROTS & CAT", .{ .x = 300, .y = 230 }, @as(f32, @floatFromInt(font.baseSize)), -2, raylib.WHITE);
 
     texture = raylib.LoadTextureFromImage(parrots); // Image converted to texture, uploaded to GPU memory (VRAM)
 }
@@ -70,8 +70,8 @@ fn update(_: f32) !void {
 
     raylib.ClearBackground(raylib.RAYWHITE);
 
-    raylib.DrawTexture(texture, screenWidth / 2 - @divFloor(texture.width, 2), screenHeight / 2 -  @divFloor(texture.height, 2) - 40, raylib.WHITE);
-    raylib.DrawRectangleLines(screenWidth / 2 -  @divFloor(texture.width, 2), screenHeight / 2 -  @divFloor(texture.height, 2) - 40, texture.width, texture.height, raylib.DARKGRAY);
+    raylib.DrawTexture(texture, screenWidth / 2 - @divFloor(texture.width, 2), screenHeight / 2 - @divFloor(texture.height, 2) - 40, raylib.WHITE);
+    raylib.DrawRectangleLines(screenWidth / 2 - @divFloor(texture.width, 2), screenHeight / 2 - @divFloor(texture.height, 2) - 40, texture.width, texture.height, raylib.DARKGRAY);
 
     raylib.DrawText("We are drawing only one texture from various images composed!", 240, 350, 10, raylib.DARKGRAY);
     raylib.DrawText("Source images have been cropped, scaled, flipped and copied one over the other.", 190, 370, 10, raylib.DARKGRAY);

@@ -117,7 +117,7 @@ fn update(_: f32) !void {
         raylib.BeginDrawing();
         defer raylib.EndDrawing();
 
-        raylib.ClearBackground(raylib.GetColor(@bitCast(u32, raygui.GuiGetStyle(.DEFAULT, @enumToInt(raygui.GuiDefaultProperty.BACKGROUND_COLOR)))));
+        raylib.ClearBackground(raylib.GetColor(@as(u32, @bitCast(raygui.GuiGetStyle(.DEFAULT, @intFromEnum(raygui.GuiDefaultProperty.BACKGROUND_COLOR))))));
 
         // raygui: controls drawing
         //----------------------------------------------------------------------------------
@@ -132,7 +132,7 @@ fn update(_: f32) !void {
         //GuiSetStyle(CHECKBOX, @enumToInt(raygui.GuiControlProperty.TEXT_ALIGNMENT), @enumToInt(raygui.GuiTextAlignment.TEXT_ALIGN_LEFT));
         _ = raygui.GuiCheckBox(.{ .x = 25, .y = 108, .width = 15, .height = 15 }, "FORCE CHECK!", &forceSquaredChecked);
 
-        raygui.GuiSetStyle(@enumToInt(raygui.GuiControl.TEXTBOX), @enumToInt(raygui.GuiControlProperty.TEXT_ALIGNMENT), @enumToInt(raygui.GuiTextAlignment.TEXT_ALIGN_CENTER));
+        raygui.GuiSetStyle(@intFromEnum(raygui.GuiControl.TEXTBOX), @intFromEnum(raygui.GuiControlProperty.TEXT_ALIGNMENT), @intFromEnum(raygui.GuiTextAlignment.TEXT_ALIGN_CENTER));
         //GuiSetStyle(VALUEBOX, @enumToInt(raygui.GuiControlProperty.TEXT_ALIGNMENT), @enumToInt(raygui.GuiTextAlignment.TEXT_ALIGN_LEFT));
         if (raygui.GuiSpinner(.{ .x = 25, .y = 135, .width = 125, .height = 30 }, "", &spinner001Value, 0, 100, spinnerEditMode) != 0) {
             spinnerEditMode = !spinnerEditMode;
@@ -140,16 +140,16 @@ fn update(_: f32) !void {
         if (raygui.GuiValueBox(.{ .x = 25, .y = 175, .width = 125, .height = 30 }, "", &valueBox002Value, 0, 100, valueBoxEditMode) != 0) {
             valueBoxEditMode = !valueBoxEditMode;
         }
-        raygui.GuiSetStyle(@enumToInt(raygui.GuiControl.TEXTBOX), @enumToInt(raygui.GuiControlProperty.TEXT_ALIGNMENT), @enumToInt(raygui.GuiTextAlignment.TEXT_ALIGN_LEFT));
-        if (raygui.GuiTextBox(.{ .x = 25, .y = 215, .width = 125, .height = 30 }, @ptrCast(?[*:0]u8, &textBoxText), 63, textBoxEditMode) != 0) {
+        raygui.GuiSetStyle(@intFromEnum(raygui.GuiControl.TEXTBOX), @intFromEnum(raygui.GuiControlProperty.TEXT_ALIGNMENT), @intFromEnum(raygui.GuiTextAlignment.TEXT_ALIGN_LEFT));
+        if (raygui.GuiTextBox(.{ .x = 25, .y = 215, .width = 125, .height = 30 }, @as(?[*:0]u8, @ptrCast(&textBoxText)), 63, textBoxEditMode) != 0) {
             textBoxEditMode = !textBoxEditMode;
         }
 
-        raygui.GuiSetStyle(@enumToInt(raygui.GuiControl.BUTTON), @enumToInt(raygui.GuiControlProperty.TEXT_ALIGNMENT), @enumToInt(raygui.GuiTextAlignment.TEXT_ALIGN_CENTER));
+        raygui.GuiSetStyle(@intFromEnum(raygui.GuiControl.BUTTON), @intFromEnum(raygui.GuiControlProperty.TEXT_ALIGNMENT), @intFromEnum(raygui.GuiTextAlignment.TEXT_ALIGN_CENTER));
 
         if (raygui.GuiButton(
             .{ .x = 25, .y = 255, .width = 125, .height = 30 },
-            raygui.GuiIconText(@enumToInt(raygui.GuiIconName.ICON_FILE_SAVE), "Save File"),
+            raygui.GuiIconText(@intFromEnum(raygui.GuiIconName.ICON_FILE_SAVE), "Save File"),
         ) != 0) {
             showTextInputBox = true;
         }
@@ -170,10 +170,10 @@ fn update(_: f32) !void {
         _ = raygui.GuiComboBox(.{ .x = 25, .y = 470, .width = 125, .height = 30 }, "ONE;TWO;THREE;FOUR", &comboBoxActive);
 
         // NOTE: GuiDropdownBox must draw after any other control that can be covered on unfolding
-        raygui.GuiSetStyle(@enumToInt(raygui.GuiControl.DROPDOWNBOX), @enumToInt(raygui.GuiControlProperty.TEXT_ALIGNMENT), @enumToInt(raygui.GuiTextAlignment.TEXT_ALIGN_LEFT));
+        raygui.GuiSetStyle(@intFromEnum(raygui.GuiControl.DROPDOWNBOX), @intFromEnum(raygui.GuiControlProperty.TEXT_ALIGNMENT), @intFromEnum(raygui.GuiTextAlignment.TEXT_ALIGN_LEFT));
         if (raygui.GuiDropdownBox(.{ .x = 25, .y = 65, .width = 125, .height = 30 }, "#01#ONE;#02#TWO;#03#THREE;#04#FOUR", &dropdownBox001Active, dropDown001EditMode) != 0) dropDown001EditMode = !dropDown001EditMode;
 
-        raygui.GuiSetStyle(@enumToInt(raygui.GuiControl.DROPDOWNBOX), @enumToInt(raygui.GuiControlProperty.TEXT_ALIGNMENT), @enumToInt(raygui.GuiTextAlignment.TEXT_ALIGN_CENTER));
+        raygui.GuiSetStyle(@intFromEnum(raygui.GuiControl.DROPDOWNBOX), @intFromEnum(raygui.GuiControlProperty.TEXT_ALIGNMENT), @intFromEnum(raygui.GuiTextAlignment.TEXT_ALIGN_CENTER));
         if (raygui.GuiDropdownBox(.{ .x = 25, .y = 25, .width = 125, .height = 30 }, "ONE;TWO;THREE", &dropdownBox000Active, dropDown000EditMode) != 0) dropDown000EditMode = !dropDown000EditMode;
 
         // Second GUI column
@@ -196,13 +196,13 @@ fn update(_: f32) !void {
         var mouseCell = raygui.Vector2{ .x = 0, .y = 0 };
         _ = raygui.GuiGrid(.{ .x = 560, .y = 25 + 180 + 180, .width = 100, .height = 120 }, "", 20, 2, &mouseCell);
 
-        _ = raygui.GuiStatusBar(.{ .x = 0, .y = @intToFloat(f32, raylib.GetScreenHeight() - 20), .width = @intToFloat(f32, raylib.GetScreenWidth()), .height = 20 }, "This is a status bar");
+        _ = raygui.GuiStatusBar(.{ .x = 0, .y = @as(f32, @floatFromInt(raylib.GetScreenHeight() - 20)), .width = @as(f32, @floatFromInt(raylib.GetScreenWidth())), .height = 20 }, "This is a status bar");
 
         _ = raygui.GuiColorBarAlpha(.{ .x = 320, .y = 490, .width = 200, .height = 30 }, "", &alphaValue);
 
         if (showMessageBox) {
             raylib.DrawRectangle(0, 0, raylib.GetScreenWidth(), raylib.GetScreenHeight(), raylib.Fade(raylib.RAYWHITE, 0.8));
-            const result = raygui.GuiMessageBox(.{ .x = @intToFloat(f32, raylib.GetScreenWidth()) / 2 - 125, .y = @intToFloat(f32, raylib.GetScreenHeight()) / 2 - 50, .width = 250, .height = 100 }, raygui.GuiIconText(@enumToInt(raygui.GuiIconName.ICON_EXIT), "Close Window"), "Do you really want to exit?", "Yes;No");
+            const result = raygui.GuiMessageBox(.{ .x = @as(f32, @floatFromInt(raylib.GetScreenWidth())) / 2 - 125, .y = @as(f32, @floatFromInt(raylib.GetScreenHeight())) / 2 - 50, .width = 250, .height = 100 }, raygui.GuiIconText(@intFromEnum(raygui.GuiIconName.ICON_EXIT), "Close Window"), "Do you really want to exit?", "Yes;No");
 
             if ((result == 0) or (result == 2)) {
                 showMessageBox = false;
@@ -216,11 +216,11 @@ fn update(_: f32) !void {
             raylib.DrawRectangle(0, 0, raylib.GetScreenWidth(), raylib.GetScreenHeight(), raylib.Fade(raylib.RAYWHITE, 0.8));
             var secretViewActive = false;
             const result = raygui.GuiTextInputBox(
-                .{ .x = @intToFloat(f32, raylib.GetScreenWidth()) / 2 - 120, .y = @intToFloat(f32, raylib.GetScreenHeight()) / 2 - 60, .width = 240, .height = 140 },
+                .{ .x = @as(f32, @floatFromInt(raylib.GetScreenWidth())) / 2 - 120, .y = @as(f32, @floatFromInt(raylib.GetScreenHeight())) / 2 - 60, .width = 240, .height = 140 },
                 "Save",
-                raygui.GuiIconText(@enumToInt(raygui.GuiIconName.ICON_FILE_SAVE), "Save file as..."),
+                raygui.GuiIconText(@intFromEnum(raygui.GuiIconName.ICON_FILE_SAVE), "Save file as..."),
                 "Ok;Cancel",
-                @ptrCast(?[*:0]u8, &textInput),
+                @as(?[*:0]u8, @ptrCast(&textInput)),
                 255,
                 &secretViewActive,
             );

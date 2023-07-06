@@ -32,7 +32,6 @@ fn update(_: f32) !void {
         if (raylib.GuiButton(raylib.Rectangle{ .x = 25, .y = 155, .width = 125, .height = 30 }, "Test")) {
             std.log.info("Test button pressed", .{});
         }
-        
 
         if (raylib.GuiDrawIconButton(raylib.Rectangle{ .x = 25, .y = 255, .width = 125, .height = 30 }, .RICON_1UP, raylib.BLACK)) {
             std.log.info("Icon button pressed", .{});

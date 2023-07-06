@@ -78,18 +78,18 @@ fn update(_: f32) !void {
             // Draw axis: left joystick
             raylib.DrawCircle(259, 152, 39, raylib.BLACK);
             raylib.DrawCircle(259, 152, 34, raylib.LIGHTGRAY);
-            raylib.DrawCircle(259 + @floatToInt(i32, raylib.GetGamepadAxisMovement(0, .GAMEPAD_AXIS_LEFT_X) * 20), 152 + @floatToInt(i32, raylib.GetGamepadAxisMovement(0, .GAMEPAD_AXIS_LEFT_Y) * 20), 25, raylib.BLACK);
+            raylib.DrawCircle(259 + @as(i32, @intFromFloat(raylib.GetGamepadAxisMovement(0, .GAMEPAD_AXIS_LEFT_X) * 20)), 152 + @as(i32, @intFromFloat(raylib.GetGamepadAxisMovement(0, .GAMEPAD_AXIS_LEFT_Y) * 20)), 25, raylib.BLACK);
 
             // Draw axis: right joystick
             raylib.DrawCircle(461, 237, 38, raylib.BLACK);
             raylib.DrawCircle(461, 237, 33, raylib.LIGHTGRAY);
-            raylib.DrawCircle(461 + @floatToInt(i32, raylib.GetGamepadAxisMovement(0, .GAMEPAD_AXIS_RIGHT_X) * 20), 237 + @floatToInt(i32, raylib.GetGamepadAxisMovement(0, .GAMEPAD_AXIS_RIGHT_Y) * 20), 25, raylib.BLACK);
+            raylib.DrawCircle(461 + @as(i32, @intFromFloat(raylib.GetGamepadAxisMovement(0, .GAMEPAD_AXIS_RIGHT_X) * 20)), 237 + @as(i32, @intFromFloat(raylib.GetGamepadAxisMovement(0, .GAMEPAD_AXIS_RIGHT_Y) * 20)), 25, raylib.BLACK);
 
             // Draw axis: left-right triggers
             raylib.DrawRectangle(170, 30, 15, 70, raylib.GRAY);
             raylib.DrawRectangle(604, 30, 15, 70, raylib.GRAY);
-            raylib.DrawRectangle(170, 30, 15, @floatToInt(i32, ((1 + raylib.GetGamepadAxisMovement(0, .GAMEPAD_AXIS_LEFT_TRIGGER)) / 2) * 70), raylib.RED);
-            raylib.DrawRectangle(604, 30, 15, @floatToInt(i32, ((1 + raylib.GetGamepadAxisMovement(0, .GAMEPAD_AXIS_RIGHT_TRIGGER)) / 2) * 70), raylib.RED);
+            raylib.DrawRectangle(170, 30, 15, @as(i32, @intFromFloat(((1 + raylib.GetGamepadAxisMovement(0, .GAMEPAD_AXIS_LEFT_TRIGGER)) / 2) * 70)), raylib.RED);
+            raylib.DrawRectangle(604, 30, 15, @as(i32, @intFromFloat(((1 + raylib.GetGamepadAxisMovement(0, .GAMEPAD_AXIS_RIGHT_TRIGGER)) / 2) * 70)), raylib.RED);
 
             //DrawText(TextFormat("Xbox axis LT: %02.02f", GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_TRIGGER)), 10, 40, 10, BLACK);
             //DrawText(TextFormat("Xbox axis RT: %02.02f", GetGamepadAxisMovement(0, GAMEPAD_AXIS_RIGHT_TRIGGER)), 10, 60, 10, BLACK);
@@ -122,18 +122,18 @@ fn update(_: f32) !void {
             // Draw axis: left joystick
             raylib.DrawCircle(319, 255, 35, raylib.BLACK);
             raylib.DrawCircle(319, 255, 31, raylib.LIGHTGRAY);
-            raylib.DrawCircle(319 + @floatToInt(i32, raylib.GetGamepadAxisMovement(0, .GAMEPAD_AXIS_LEFT_X) * 20), 255 + @floatToInt(i32, raylib.GetGamepadAxisMovement(0, .GAMEPAD_AXIS_LEFT_Y) * 20), 25, raylib.BLACK);
+            raylib.DrawCircle(319 + @as(i32, @intFromFloat(raylib.GetGamepadAxisMovement(0, .GAMEPAD_AXIS_LEFT_X) * 20)), 255 + @as(i32, @intFromFloat(raylib.GetGamepadAxisMovement(0, .GAMEPAD_AXIS_LEFT_Y) * 20)), 25, raylib.BLACK);
 
             // Draw axis: right joystick
             raylib.DrawCircle(475, 255, 35, raylib.BLACK);
             raylib.DrawCircle(475, 255, 31, raylib.LIGHTGRAY);
-            raylib.DrawCircle(475 + @floatToInt(i32, raylib.GetGamepadAxisMovement(0, .GAMEPAD_AXIS_RIGHT_X) * 20), 255 + @floatToInt(i32, raylib.GetGamepadAxisMovement(0, .GAMEPAD_AXIS_RIGHT_Y) * 20), 25, raylib.BLACK);
+            raylib.DrawCircle(475 + @as(i32, @intFromFloat(raylib.GetGamepadAxisMovement(0, .GAMEPAD_AXIS_RIGHT_X) * 20)), 255 + @as(i32, @intFromFloat(raylib.GetGamepadAxisMovement(0, .GAMEPAD_AXIS_RIGHT_Y) * 20)), 25, raylib.BLACK);
 
             // Draw axis: left-right triggers
             raylib.DrawRectangle(169, 48, 15, 70, raylib.GRAY);
             raylib.DrawRectangle(611, 48, 15, 70, raylib.GRAY);
-            raylib.DrawRectangle(169, 48, 15, ((@floatToInt(i32, 1 - raylib.GetGamepadAxisMovement(0, .GAMEPAD_AXIS_LEFT_TRIGGER) / 2)) * 70), raylib.RED);
-            raylib.DrawRectangle(611, 48, 15, ((@floatToInt(i32, 1 - raylib.GetGamepadAxisMovement(0, .GAMEPAD_AXIS_RIGHT_TRIGGER) / 2)) * 70), raylib.RED);
+            raylib.DrawRectangle(169, 48, 15, ((@as(i32, @intFromFloat(1 - raylib.GetGamepadAxisMovement(0, .GAMEPAD_AXIS_LEFT_TRIGGER) / 2))) * 70), raylib.RED);
+            raylib.DrawRectangle(611, 48, 15, ((@as(i32, @intFromFloat(1 - raylib.GetGamepadAxisMovement(0, .GAMEPAD_AXIS_RIGHT_TRIGGER) / 2))) * 70), raylib.RED);
         } else {
             raylib.DrawText("- GENERIC GAMEPAD -", 280, 180, 20, raylib.GRAY);
         }
@@ -142,7 +142,7 @@ fn update(_: f32) !void {
 
         var i: i32 = 0;
         while (i < raylib.GetGamepadAxisCount(0)) : (i += 1) {
-            raylib.DrawText(try raylib.TextFormat(fba.allocator(), "AXIS {d}: {d}", .{ i, raylib.GetGamepadAxisMovement(0, @intToEnum(raylib.GamepadAxis, i)) }), 20, 70 + 20 * i, 10, raylib.DARKGRAY);
+            raylib.DrawText(try raylib.TextFormat(fba.allocator(), "AXIS {d}: {d}", .{ i, raylib.GetGamepadAxisMovement(0, @as(raylib.GamepadAxis, @enumFromInt(i))) }), 20, 70 + 20 * i, 10, raylib.DARKGRAY);
         }
 
         if (raylib.GetGamepadButtonPressed()) |button| {

@@ -32,10 +32,10 @@ fn init(_: std.mem.Allocator) !void {
     font = raylib.LoadFont("assets/KAISG.ttf");
 
     raylib.GenTextureMipmaps(&font.texture);
-    fontSize = @intToFloat(f32, font.baseSize);
-    fontPosition = raylib.Vector2{ .x = 40, .y = @intToFloat(f32, screenHeight) / 2.0 - 80.0 };
+    fontSize = @as(f32, @floatFromInt(font.baseSize));
+    fontPosition = raylib.Vector2{ .x = 40, .y = @as(f32, @floatFromInt(screenHeight)) / 2.0 - 80.0 };
 
-    raylib.SetTextureFilter(font.texture, @enumToInt(raylib.TextureFilter.TEXTURE_FILTER_POINT));
+    raylib.SetTextureFilter(font.texture, @intFromEnum(raylib.TextureFilter.TEXTURE_FILTER_POINT));
 }
 
 fn update(_: f32) !void {
@@ -45,18 +45,18 @@ fn update(_: f32) !void {
     fontSize += raylib.GetMouseWheelMove() * 4.0;
 
     if (raylib.IsKeyPressed(.KEY_ONE)) {
-        raylib.SetTextureFilter(font.texture, @enumToInt(raylib.TextureFilter.TEXTURE_FILTER_POINT));
+        raylib.SetTextureFilter(font.texture, @intFromEnum(raylib.TextureFilter.TEXTURE_FILTER_POINT));
         currentFontFilter = 0;
     } else if (raylib.IsKeyPressed(.KEY_TWO)) {
-        raylib.SetTextureFilter(font.texture, @enumToInt(raylib.TextureFilter.TEXTURE_FILTER_BILINEAR));
+        raylib.SetTextureFilter(font.texture, @intFromEnum(raylib.TextureFilter.TEXTURE_FILTER_BILINEAR));
         currentFontFilter = 1;
     } else if (raylib.IsKeyPressed(.KEY_THREE)) {
         // NOTE: Trilinear filter won't be noticed on 2D drawing
-        raylib.SetTextureFilter(font.texture, @enumToInt(raylib.TextureFilter.TEXTURE_FILTER_TRILINEAR));
+        raylib.SetTextureFilter(font.texture, @intFromEnum(raylib.TextureFilter.TEXTURE_FILTER_TRILINEAR));
         currentFontFilter = 2;
     }
 
-    textSize = raylib.MeasureTextEx(font, @ptrCast([*:0]const u8, &msg), fontSize, 0);
+    textSize = raylib.MeasureTextEx(font, @as([*:0]const u8, @ptrCast(&msg)), fontSize, 0);
 
     if (raylib.IsKeyDown(.KEY_LEFT)) {
         fontPosition.x -= 10;
@@ -72,7 +72,7 @@ fn update(_: f32) !void {
             raylib.UnloadFont(font);
             font = raylib.LoadFontEx(
                 droppedFiles.paths[0],
-                @floatToInt(i32, fontSize),
+                @as(i32, @intFromFloat(fontSize)),
                 null,
                 0,
             );
@@ -93,7 +93,7 @@ fn update(_: f32) !void {
         raylib.DrawText("Use 1, 2, 3 to change texture filter", 20, 60, 10, raylib.GRAY);
         raylib.DrawText("Drop a new TTF font for dynamic loading", 20, 80, 10, raylib.DARKGRAY);
 
-        raylib.DrawTextEx(font, @ptrCast([*:0]const u8, &msg), fontPosition, fontSize, 0, raylib.BLACK);
+        raylib.DrawTextEx(font, @as([*:0]const u8, @ptrCast(&msg)), fontPosition, fontSize, 0, raylib.BLACK);
 
         // TODO: It seems texSize measurement is not accurate due to chars offsets...
         //DrawRectangleLines(fontPosition.x, fontPosition.y, textSize.x, textSize.y, RED);

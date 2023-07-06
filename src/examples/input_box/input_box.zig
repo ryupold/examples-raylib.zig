@@ -48,7 +48,7 @@ fn update(_: f32) !void {
         while (key > 0) {
             // NOTE: Only allow keys in range [32..125]
             if ((key >= 32) and (key <= 125) and (letterCount < maxInputChars)) {
-                name[letterCount] = @intCast(u8, key);
+                name[letterCount] = @as(u8, @intCast(key));
                 name[letterCount + 1] = 0; // Add null terminator at the end of the string.
                 letterCount += 1;
             }
@@ -80,19 +80,19 @@ fn update(_: f32) !void {
         raylib.DrawText("PLACE MOUSE OVER INPUT BOX!", 240, 140, 20, raylib.GRAY);
         raylib.DrawRectangleRec(textBox, raylib.LIGHTGRAY);
         if (mouseOnText) {
-            raylib.DrawRectangleLines(@floatToInt(i32, textBox.x), @floatToInt(i32, textBox.y), @floatToInt(i32, textBox.width), @floatToInt(i32, textBox.height), raylib.RED);
+            raylib.DrawRectangleLines(@as(i32, @intFromFloat(textBox.x)), @as(i32, @intFromFloat(textBox.y)), @as(i32, @intFromFloat(textBox.width)), @as(i32, @intFromFloat(textBox.height)), raylib.RED);
         } else {
             raylib.DrawRectangleLines(textBox.x, textBox.y, textBox.width, textBox.height, raylib.DARKGRAY);
         }
 
-        raylib.DrawText(@ptrCast([*:0]u8, &name), @floatToInt(i32, textBox.x) + 5, @floatToInt(i32, textBox.y) + 8, 40, raylib.MAROON);
+        raylib.DrawText(@as([*:0]u8, @ptrCast(&name)), @as(i32, @intFromFloat(textBox.x)) + 5, @as(i32, @intFromFloat(textBox.y)) + 8, 40, raylib.MAROON);
         raylib.DrawText(try raylib.TextFormat(fba.allocator(), "INPUT CHARS: {d}/{d}", .{ letterCount, maxInputChars }), 315, 250, 20, raylib.DARKGRAY);
 
         if (mouseOnText) {
             if (letterCount < maxInputChars) {
                 // Draw blinking underscore char
                 if (((framesCounter / 20) % 2) == 0) {
-                    raylib.DrawText("_", @floatToInt(i32, textBox.x) + 8 + raylib.MeasureText(@ptrCast([*:0]u8, &name), 40), textBox.y + 12, 40, raylib.MAROON);
+                    raylib.DrawText("_", @as(i32, @intFromFloat(textBox.x)) + 8 + raylib.MeasureText(@as([*:0]u8, @ptrCast(&name)), 40), textBox.y + 12, 40, raylib.MAROON);
                 }
             } else {
                 raylib.DrawText("Press BACKSPACE to delete chars...", 230, 300, 20, raylib.GRAY);
@@ -104,4 +104,3 @@ fn update(_: f32) !void {
 fn deinit() void {
     raylib.CloseWindow();
 }
-

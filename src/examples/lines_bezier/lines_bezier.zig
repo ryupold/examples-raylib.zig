@@ -14,7 +14,7 @@ const screenWidth: i32 = 800;
 const screenHeight: i32 = 450;
 
 var start: raylib.Vector2 = .{ .x = 0, .y = 0 };
-var end: raylib.Vector2 = .{ .x = @intToFloat(f32, screenWidth), .y = @intToFloat(f32, screenHeight) };
+var end: raylib.Vector2 = .{ .x = @as(f32, @floatFromInt(screenWidth)), .y = @as(f32, @floatFromInt(screenHeight)) };
 
 fn init(_: std.mem.Allocator) !void {
     raylib.SetConfigFlags(.{ .FLAG_MSAA_4X_HINT = true });

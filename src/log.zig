@@ -56,7 +56,7 @@ pub fn debugAlloc(allocator: Allocator, comptime fmt: []const u8, args: anytype)
 }
 
 fn printAlloc(allocator: Allocator, comptime logLevel: LogLevel, comptime fmt: []const u8, args: anytype) !void {
-    const s = try std.fmt.allocPrintZ(allocator, fmt++"\n", args);
+    const s = try std.fmt.allocPrintZ(allocator, fmt ++ "\n", args);
     defer allocator.free(s);
     getPrintFn(logLevel)(s);
 }
@@ -84,7 +84,7 @@ fn emscriptenPrint(comptime logLevel: LogLevel) *const fn ([:0]u8) void {
                 .warn => 2,
                 .err => 4,
                 .debug => 256,
-            }, @ptrCast([*c]const u8, s));
+            }, @as([*c]const u8, @ptrCast(s)));
         }
     }).print;
 }

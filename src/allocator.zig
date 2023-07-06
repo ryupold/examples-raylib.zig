@@ -76,11 +76,11 @@ const EmscriptenAllocator = struct {
     pub const supports_posix_memalign = @hasDecl(c, "posix_memalign");
 
     fn getHeader(ptr: [*]u8) *[*]u8 {
-        return @intToPtr(*[*]u8, @ptrToInt(ptr) - @sizeOf(usize));
+        return @as(*[*]u8, @ptrFromInt(@intFromPtr(ptr) - @sizeOf(usize)));
     }
 
     fn alignedAlloc(len: usize, log2_align: u8) ?[*]u8 {
-        const alignment = @as(usize, 1) << @intCast(Allocator.Log2Align, log2_align);
+        const alignment = @as(usize, 1) << @as(Allocator.Log2Align, @intCast(log2_align));
         if (supports_posix_memalign) {
             // The posix_memalign only accepts alignment values that are a
             // multiple of the pointer size
@@ -90,14 +90,14 @@ const EmscriptenAllocator = struct {
             if (c.posix_memalign(&aligned_ptr, eff_alignment, len) != 0)
                 return null;
 
-            return @ptrCast([*]u8, aligned_ptr);
+            return @as([*]u8, @ptrCast(aligned_ptr));
         }
 
         // Thin wrapper around regular malloc, overallocate to account for
         // alignment padding and store the orignal malloc()'ed pointer before
         // the aligned address.
-        var unaligned_ptr = @ptrCast([*]u8, c.malloc(len + alignment - 1 + @sizeOf(usize)) orelse return null);
-        const unaligned_addr = @ptrToInt(unaligned_ptr);
+        var unaligned_ptr = @as([*]u8, @ptrCast(c.malloc(len + alignment - 1 + @sizeOf(usize)) orelse return null));
+        const unaligned_addr = @intFromPtr(unaligned_ptr);
         const aligned_addr = mem.alignForward(unaligned_addr + @sizeOf(usize), alignment);
         var aligned_ptr = unaligned_ptr + (aligned_addr - unaligned_addr);
         getHeader(aligned_ptr).* = unaligned_ptr;
@@ -120,7 +120,7 @@ const EmscriptenAllocator = struct {
         }
 
         const unaligned_ptr = getHeader(ptr).*;
-        const delta = @ptrToInt(ptr) - @ptrToInt(unaligned_ptr);
+        const delta = @intFromPtr(ptr) - @intFromPtr(unaligned_ptr);
         return EmscriptenAllocator.malloc_size(unaligned_ptr) - delta;
     }
 

@@ -43,13 +43,13 @@ fn update(_: f32) !void {
                 try bunnies.append(.{
                     .position = raylib.GetMousePosition(),
                     .speed = .{
-                        .x = @intToFloat(f32, raylib.GetRandomValue(-250, 250)) / 60,
-                        .y = @intToFloat(f32, raylib.GetRandomValue(-250, 250)) / 60,
+                        .x = @as(f32, @floatFromInt(raylib.GetRandomValue(-250, 250))) / 60,
+                        .y = @as(f32, @floatFromInt(raylib.GetRandomValue(-250, 250))) / 60,
                     },
                     .color = .{
-                        .r = @truncate(u8, @intCast(u32, raylib.GetRandomValue(50, 240))),
-                        .g = @truncate(u8, @intCast(u32, raylib.GetRandomValue(80, 240))),
-                        .b = @truncate(u8, @intCast(u32, raylib.GetRandomValue(100, 240))),
+                        .r = @as(u8, @truncate(@as(u32, @intCast(raylib.GetRandomValue(50, 240))))),
+                        .g = @as(u8, @truncate(@as(u32, @intCast(raylib.GetRandomValue(80, 240))))),
+                        .b = @as(u8, @truncate(@as(u32, @intCast(raylib.GetRandomValue(100, 240))))),
                         .a = 255,
                     },
                 });
@@ -59,10 +59,10 @@ fn update(_: f32) !void {
 
     for (bunnies.items) |*bunny| {
         bunny.position = bunny.position.add(bunny.speed);
-        if (((bunny.position.x + @intToFloat(f32, texBunny.width) / 2) > @intToFloat(f32, raylib.GetScreenWidth())) or
-            ((bunny.position.x + @intToFloat(f32, texBunny.width) / 2) < 0)) bunny.speed.x *= -1;
-        if (((bunny.position.y + @intToFloat(f32, texBunny.height) / 2) > @intToFloat(f32, raylib.GetScreenHeight())) or
-            ((bunny.position.y + @intToFloat(f32, texBunny.height) / 2 - 40) < 0)) bunny.speed.y *= -1;
+        if (((bunny.position.x + @as(f32, @floatFromInt(texBunny.width)) / 2) > @as(f32, @floatFromInt(raylib.GetScreenWidth()))) or
+            ((bunny.position.x + @as(f32, @floatFromInt(texBunny.width)) / 2) < 0)) bunny.speed.x *= -1;
+        if (((bunny.position.y + @as(f32, @floatFromInt(texBunny.height)) / 2) > @as(f32, @floatFromInt(raylib.GetScreenHeight()))) or
+            ((bunny.position.y + @as(f32, @floatFromInt(texBunny.height)) / 2 - 40) < 0)) bunny.speed.y *= -1;
     }
 
     // Draw
@@ -73,7 +73,7 @@ fn update(_: f32) !void {
         raylib.ClearBackground(raylib.RAYWHITE);
 
         for (bunnies.items) |bunny| {
-            raylib.DrawTexture(texBunny, @floatToInt(i32, bunny.position.x), @floatToInt(i32, bunny.position.y), bunny.color);
+            raylib.DrawTexture(texBunny, @as(i32, @intFromFloat(bunny.position.x)), @as(i32, @intFromFloat(bunny.position.y)), bunny.color);
         }
 
         raylib.DrawRectangle(0, 0, screenWidth, 40, raylib.BLACK);

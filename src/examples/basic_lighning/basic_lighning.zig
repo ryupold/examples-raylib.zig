@@ -51,7 +51,7 @@ fn init(_: std.mem.Allocator) !void {
         try std.fmt.allocPrintZ(fba.allocator(), "assets/shaders/glsl{d}/lighting.fs", .{glslVersion}),
     );
 
-    shader.locs.?[@enumToInt(raylib.ShaderLocationIndex.SHADER_LOC_VECTOR_VIEW)] = raylib.GetShaderLocation(shader, "viewPos");
+    shader.locs.?[@intFromEnum(raylib.ShaderLocationIndex.SHADER_LOC_VECTOR_VIEW)] = raylib.GetShaderLocation(shader, "viewPos");
 
     ambientLoc = raylib.GetShaderLocation(shader, "ambient");
     var newAmbientLoc = [4]f32{ 0.1, 0.1, 0.1, 1.0 };
@@ -82,7 +82,7 @@ fn update(_: f32) !void {
         var cameraPos: [3]f32 = .{ camera.position.x, camera.position.y, camera.position.z };
         raylib.SetShaderValue(
             shader,
-            shader.locs.?[@enumToInt(raylib.ShaderLocationIndex.SHADER_LOC_VECTOR_VIEW)],
+            shader.locs.?[@intFromEnum(raylib.ShaderLocationIndex.SHADER_LOC_VECTOR_VIEW)],
             &cameraPos,
             .SHADER_UNIFORM_VEC3,
         );
@@ -196,7 +196,7 @@ fn updateLightValues(shadr: raylib.Shader, light: Light, lightLocation: LightLoc
     raylib.SetShaderValue(shadr, lightLocation.targetLoc, &target, .SHADER_UNIFORM_VEC3);
 
     // Send to shader light color values
-    var color: [4]f32 = .{ @intToFloat(f32, light.color.r) / 255.0, @intToFloat(f32, light.color.g) / 255, @intToFloat(f32, light.color.b) / 255, @intToFloat(f32, light.color.a) / 255 };
+    var color: [4]f32 = .{ @as(f32, @floatFromInt(light.color.r)) / 255.0, @as(f32, @floatFromInt(light.color.g)) / 255, @as(f32, @floatFromInt(light.color.b)) / 255, @as(f32, @floatFromInt(light.color.a)) / 255 };
     raylib.SetShaderValue(shadr, lightLocation.colorLoc, &color, .SHADER_UNIFORM_VEC4);
 }
 

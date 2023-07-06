@@ -17,8 +17,8 @@ const screenWidth: i32 = 800;
 const screenHeight: i32 = 450;
 
 var ballPosition: raylib.Vector2 = .{
-    .x = @intToFloat(f32, screenWidth) / 2.0,
-    .y = @intToFloat(f32, screenHeight) / 2.0,
+    .x = @as(f32, @floatFromInt(screenWidth)) / 2.0,
+    .y = @as(f32, @floatFromInt(screenHeight)) / 2.0,
 };
 
 var camera: Camera3D = .{
