@@ -3,7 +3,7 @@ const Allocator = std.mem.Allocator;
 const fmt = std.fmt;
 const log = @import("log.zig");
 const game = @import("game.zig");
-const raylib = @import("raylib/raylib.zig");
+const raylib = @import("raylib");
 
 pub fn main() anyerror!void {
     try game.start(@import("load_example.zig").name);
@@ -11,7 +11,7 @@ pub fn main() anyerror!void {
 
     while (!raylib.WindowShouldClose()) {
         game.loop(raylib.GetFrameTime()) catch |err| {
-            if(err == error.Exit) break;
+            if (err == error.Exit) break;
             log.err("ERROR: {?}", .{err});
         };
     }

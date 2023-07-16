@@ -200,18 +200,12 @@ pub fn build(b: *std.Build) !void {
                 .target = target,
             });
 
-            const rayBuild = @import("src/raylib/raylib/src/build.zig");
-            const raylib = rayBuild.addRaylib(b, target, mode, .{});
-            exe.linkLibrary(raylib);
-            exe.addIncludePath(raylibSrc);
-            exe.addIncludePath(rayguiSrc);
-            exe.addIncludePath(raylibSrc ++ "extras/");
-            exe.addIncludePath(bindingSrc);
-            exe.addIncludePath("src/raygui");
-            exe.addCSourceFile(bindingSrc ++ "marshal.c", &.{});
-            exe.addCSourceFile("src/raygui/raygui_marshal.c", &.{"-DRAYGUI_IMPLEMENTATION"});
+            const raylib = @import("src/raylib/build.zig");
+            const raygui = @import("src/raygui/build.zig");
+            raylib.addTo(b, exe, target, mode);
+            raygui.addTo(b, exe, target, mode);
 
-            switch (raylib.target.getOsTag()) {
+            switch (target.getOsTag()) {
                 .macos => {
                     exe.linkFramework("Foundation");
                     exe.linkFramework("Cocoa");

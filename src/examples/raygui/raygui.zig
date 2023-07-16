@@ -2,8 +2,8 @@
 
 const std = @import("std");
 const Example = @import("../example.zig").Example;
-const raylib = @import("../../raylib/raylib.zig");
-const raygui = @import("../../raygui/raygui.zig");
+const raylib = @import("raylib");
+const raygui = @import("raygui");
 
 pub const example = Example{
     .initFn = init,

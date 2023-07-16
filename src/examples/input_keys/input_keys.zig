@@ -2,7 +2,7 @@
 
 const std = @import("std");
 const Example = @import("../example.zig").Example;
-const raylib = @import("../../raylib/raylib.zig");
+const raylib = @import("raylib");
 const IsKeyDown = raylib.IsKeyDown;
 const Keys = raylib.KeyboardKey;
 

@@ -2,7 +2,7 @@
 
 const std = @import("std");
 const Example = @import("../example.zig").Example;
-const raylib = @import("../../raylib/raylib.zig");
+const raylib = @import("raylib");
 
 const Camera3D = raylib.Camera3D;
 const Vector3 = raylib.Vector3;
