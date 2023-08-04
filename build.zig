@@ -38,8 +38,8 @@ pub fn build(b: *std.Build) !void {
                 .optimize = mode,
                 .target = target,
             });
-            lib.addIncludePath(raylibSrc);
-            lib.addIncludePath(rayguiSrc);
+            lib.addIncludePath(.{ .path = raylibSrc });
+            lib.addIncludePath(.{ .path = rayguiSrc });
 
             const emcc_file = switch (b.host.target.os.tag) {
                 .windows => "emcc.bat",
@@ -110,13 +110,13 @@ pub fn build(b: *std.Build) !void {
             lib.defineCMacro("__EMSCRIPTEN__", null);
             lib.defineCMacro("PLATFORM_WEB", null);
             std.log.info("emscripten include path: {s}", .{include_path});
-            lib.addIncludePath(include_path);
-            lib.addIncludePath(emscriptenSrc);
-            lib.addIncludePath(bindingSrc);
-            lib.addIncludePath("src/raygui");
-            lib.addIncludePath(raylibSrc);
-            lib.addIncludePath(rayguiSrc);
-            lib.addIncludePath(raylibSrc ++ "extras/");
+            lib.addIncludePath(.{ .path = include_path });
+            lib.addIncludePath(.{ .path = emscriptenSrc });
+            lib.addIncludePath(.{ .path = bindingSrc });
+            lib.addIncludePath(.{ .path = "src/raygui" });
+            lib.addIncludePath(.{ .path = raylibSrc });
+            lib.addIncludePath(.{ .path = rayguiSrc });
+            lib.addIncludePath(.{ .path = raylibSrc ++ "extras/" });
 
             const libraryOutputFolder = "zig-out/lib/";
             // this installs the lib (libraylib-zig-examples.a) to the `libraryOutputFolder` folder
@@ -215,7 +215,7 @@ pub fn build(b: *std.Build) !void {
                     exe.linkFramework("IOKit");
                 },
                 .linux => {
-                    exe.addLibraryPath("/usr/lib64/");
+                    exe.addLibraryPath(.{ .path = "/usr/lib64/" });
                     exe.linkSystemLibrary("GL");
                     exe.linkSystemLibrary("rt");
                     exe.linkSystemLibrary("dl");
