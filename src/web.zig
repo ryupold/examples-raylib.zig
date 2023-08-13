@@ -8,7 +8,7 @@ const emsdk = @cImport({
 const log = @import("log.zig");
 const game = @import("game.zig");
 const ZecsiAllocator = @import("allocator.zig").ZecsiAllocator;
-const raylib = @import("raylib/raylib.zig");
+const raylib = @import("raylib");
 
 ////special entry point for Emscripten build, called from src/marshall/emscripten_entry.c
 export fn emsc_main() callconv(.C) c_int {
@@ -19,7 +19,7 @@ export fn emsc_main() callconv(.C) c_int {
 }
 
 export fn emsc_set_window_size(width: c_int, height: c_int) callconv(.C) void {
-    raylib.SetWindowSize(@intCast(i32, width), @intCast(i32, height));
+    raylib.SetWindowSize(@intCast(width), @intCast(height));
 }
 
 fn safeMain() !c_int {

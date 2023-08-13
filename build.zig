@@ -6,7 +6,8 @@ pub const APP_NAME = "raylib-zig-examples";
 
 const raylibSrc = "src/raylib/raylib/src/";
 const rayguiSrc = "src/raygui/raygui/src/";
-const bindingSrc = "src/raylib/";
+const raylibBindingSrc = "src/raylib/";
+const rayguiBindingSrc = "src/raygui/";
 
 pub fn build(b: *std.Build) !void {
     try promptExample();
@@ -112,11 +113,18 @@ pub fn build(b: *std.Build) !void {
             std.log.info("emscripten include path: {s}", .{include_path});
             lib.addIncludePath(.{ .path = include_path });
             lib.addIncludePath(.{ .path = emscriptenSrc });
-            lib.addIncludePath(.{ .path = bindingSrc });
-            lib.addIncludePath(.{ .path = "src/raygui" });
+            lib.addIncludePath(.{ .path = raylibBindingSrc });
+            lib.addIncludePath(.{ .path = rayguiBindingSrc });
             lib.addIncludePath(.{ .path = raylibSrc });
             lib.addIncludePath(.{ .path = rayguiSrc });
             lib.addIncludePath(.{ .path = raylibSrc ++ "extras/" });
+            lib.addAnonymousModule("raylib", .{ .source_file = .{ .path = raylibBindingSrc ++ "raylib.zig" } });
+            lib.addAnonymousModule("raygui", .{
+                .source_file = .{ .path = rayguiBindingSrc ++ "raygui.zig" },
+                .dependencies = &.{
+                    .{ .name = "raylib", .module = lib.modules.get("raylib").? },
+                },
+            });
 
             const libraryOutputFolder = "zig-out/lib/";
             // this installs the lib (libraylib-zig-examples.a) to the `libraryOutputFolder` folder
@@ -133,16 +141,16 @@ pub fn build(b: *std.Build) !void {
                 webOutdir ++ "game.html",
 
                 emscriptenSrc ++ "entry.c",
-                bindingSrc ++ "marshal.c",
-                "src/raygui/raygui_marshal.c",
+                raylibBindingSrc ++ "marshal.c",
+                rayguiBindingSrc ++ "raygui_marshal.c",
 
                 libraryOutputFolder ++ "lib" ++ APP_NAME ++ ".a",
                 "-I.",
                 "-I" ++ raylibSrc,
                 "-I" ++ rayguiSrc,
                 "-I" ++ emscriptenSrc,
-                "-I" ++ bindingSrc,
-                "-Isrc/raygui/",
+                "-I" ++ raylibBindingSrc,
+                "-I" ++ rayguiBindingSrc,
                 "-L.",
                 "-L" ++ webCachedir,
                 "-L" ++ libraryOutputFolder,

@@ -63,7 +63,7 @@ fn update(_: f32) !void {
         raylib.WHITE,
     );
     for (0..@as(usize, @intCast(model.boneCount))) |i| {
-        raylib.DrawCube(anims.?[0].framePoses.?[animFrameCounter][i].translation, 0.2, 0.2, 0.2, raylib.RED);
+        raylib.DrawCube(anims.?[0].framePoses.?[@intCast(animFrameCounter)][i].translation, 0.2, 0.2, 0.2, raylib.RED);
     }
 
     raylib.DrawGrid(10, 1.0);
