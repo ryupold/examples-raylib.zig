@@ -18,6 +18,7 @@ pub const exampleList: []const []const u8 = &.{
     "basic_lighning",
     "image_drawing",
     "3d_anim",
+    "audio_stream",
 };
 
 pub const examples = std.ComptimeStringMap(Example, .{
@@ -37,4 +38,5 @@ pub const examples = std.ComptimeStringMap(Example, .{
     .{ "basic_lighning", @import("examples/basic_lighning/basic_lighning.zig").example },
     .{ "image_drawing", @import("examples/image_drawing/image_drawing.zig").example },
     .{ "3d_anim", @import("examples/3d_anim/3d_anim.zig").example },
+    .{ "audio_stream", @import("examples/audio_stream/audio_stream.zig").example },
 });
