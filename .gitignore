@@ -8,3 +8,5 @@ zig-out/
 src/load_example.zig
 
 .DS_Store
+
+.vscode/settings.json

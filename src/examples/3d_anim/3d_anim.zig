@@ -22,7 +22,7 @@ var camera: raylib.Camera3D = .{
 var model: raylib.Model = undefined;
 var texture: raylib.Texture2D = undefined;
 var animFrameCounter: u64 = 0;
-var animsCount: u32 = 0;
+var animsCount: i32 = 0;
 var anims: ?[*]raylib.ModelAnimation = undefined;
 
 fn init(_: std.mem.Allocator) !void {
@@ -34,7 +34,7 @@ fn init(_: std.mem.Allocator) !void {
     texture = raylib.LoadTexture("assets/guytex.png");
     raylib.SetMaterialTexture(model.materials, raylib.MATERIAL_MAP_DIFFUSE, texture);
 
-    anims = raylib.LoadModelAnimations("assets/guyanim.iqm", @as(?[*]u32, @ptrCast(&animsCount)));
+    anims = raylib.LoadModelAnimations("assets/guyanim.iqm", @as(?[*]i32, @ptrCast(&animsCount)));
 }
 
 fn update(_: f32) !void {
