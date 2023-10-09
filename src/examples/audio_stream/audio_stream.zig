@@ -99,7 +99,7 @@ fn update(_: f32) !void {
             };
             raylib.DrawCircleV(nextPoint, 1, raylib.GREEN.lerp(
                 raylib.RED,
-                std.math.fabs(samples[i * music.stream.channels + channel]) * 5,
+                @abs(samples[i * music.stream.channels + channel]) * 5,
             ));
         }
     }
