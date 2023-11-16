@@ -56,4 +56,7 @@ fn update(_: f32) !void {
         20,
         raylib.YELLOW,
     );
+
+    raylib.DrawText("zig build --help\n\nto see a list of examples", 100, 300, 18, raylib.BLUE);
+    raylib.DrawText("zig build run -Dexample=6\n\nto run a specific example", 400, 400, 18, raylib.ORANGE);
 }

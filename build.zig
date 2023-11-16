@@ -10,8 +10,6 @@ const raylibBindingSrc = "src/raylib/";
 const rayguiBindingSrc = "src/raygui/";
 
 pub fn build(b: *std.Build) !void {
-    try promptExample();
-
     // Standard target options allows the person running `zig build` to choose
     // what target to build for. Here we do not override the defaults, which
     // means any target is allowed, and the default is native. Other options
@@ -21,6 +19,9 @@ pub fn build(b: *std.Build) !void {
     // Standard release options allow the person running `zig build` to select
     // between Debug, ReleaseSafe, ReleaseFast, and ReleaseSmall.
     const mode = b.standardOptimizeOption(.{});
+
+    const exampleNr = b.option(usize, "example", try exampleDescription(b)) orelse 1;
+    try writeExampleFile(exampleNr);
 
     switch (target.getOsTag()) {
         .wasi, .emscripten => {
@@ -248,38 +249,49 @@ pub fn build(b: *std.Build) !void {
     }
 }
 
-fn promptExample() !void {
-    prompt: while (true) {
-        var buf: [4069]u8 = undefined;
-        var fba = std.heap.FixedBufferAllocator.init(&buf);
-        defer fba.reset();
-        const output = std.io.getStdOut();
-        var writer = output.writer();
-
-        try writer.writeAll("\n\nExamples:\n--------------------------------------------------\n");
-        for (exampleList, 0..) |example, i| {
-            defer fba.reset();
-            try writer.writeAll(try std.fmt.allocPrint(fba.allocator(), "{d}:\t{s}\n", .{ i + 1, example }));
-        }
-        try writer.writeAll("--------------------------------------------------\n\nSelect which example should be built: ");
-
-        const input = std.io.getStdIn();
-        var reader = input.reader();
-
-        const option = reader.readUntilDelimiterOrEofAlloc(fba.allocator(), '\n', buf.len) catch continue;
-        const nr = std.fmt.parseInt(usize, std.mem.trim(u8, option.?, " \t\n\r"), 10) catch |err| {
-            std.log.err("{?} in input: {?s}", .{ err, option });
-            continue;
-        };
-        fba.reset();
-
-        for (exampleList, 1..) |example, i| {
-            if (nr == i) {
-                var load_example = try std.fs.cwd().createFile("src/load_example.zig", .{});
-                defer load_example.close();
-                try load_example.writeAll(try std.fmt.allocPrint(fba.allocator(), "pub const name = \"{s}\";\n", .{example}));
-                break :prompt;
-            }
+fn writeExampleFile(exampleNr: usize) !void {
+    var tmp: [4096]u8 = undefined;
+    var fba = std.heap.FixedBufferAllocator.init(&tmp);
+    for (exampleList, 1..) |example, i| {
+        if (exampleNr == i) {
+            var load_example = try std.fs.cwd().createFile("src/load_example.zig", .{});
+            defer load_example.close();
+            try load_example.writeAll(try std.fmt.allocPrint(fba.allocator(), "pub const name = \"{s}\";\n", .{example}));
+            return;
         }
     }
+}
+
+fn exampleDescription(b: *std.Build) ![]const u8 {
+    var buf: []u8 = try b.allocator.alloc(u8, 4096);
+    var tmp: [4096]u8 = undefined;
+    var fba = std.heap.FixedBufferAllocator.init(&tmp);
+
+    const Context = struct {
+        index: usize,
+        buf: []u8,
+        allocator: std.mem.Allocator,
+    };
+
+    const Writer = std.io.Writer(*Context, error{OutOfMemory}, (struct {
+        fn write(ctx: *Context, bytes: []const u8) error{OutOfMemory}!usize {
+            if (ctx.buf.len < ctx.index + bytes.len) {
+                return error.OutOfMemory;
+            }
+            std.mem.copy(u8, ctx.buf[ctx.index..], bytes);
+            ctx.index += bytes.len;
+            return bytes.len;
+        }
+    }).write);
+
+    var ctx: Context = .{ .index = 0, .buf = buf, .allocator = fba.allocator() };
+    var w: Writer = .{ .context = &ctx };
+
+    try w.writeAll("Select which example should be built\n\nExamples:\n--------------------------------------------------\n");
+    for (exampleList, 0..) |example, i| {
+        defer fba.reset();
+        try w.writeAll(try std.fmt.allocPrint(fba.allocator(), "{d}:\t{s}\n", .{ i + 1, example }));
+    }
+    try w.writeAll("--------------------------------------------------\n\n");
+    return w.context.buf[0..w.context.index];
 }
