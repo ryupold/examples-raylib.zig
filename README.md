@@ -28,13 +28,15 @@ git clone --recurse-submodules https://github.com/ryupold/examples-raylib.zig
 ### run locally
 
 ```sh
-zig build run
+zig build run # runs first example (hello_world)
+zig build run -Dexample=5 # runs example no. 5
 ```
 
 ### build for host os and architecture
 
 ```sh
 zig build -Doptimize=ReleaseSmall
+zig build -Doptimize=ReleaseSmall -Dexample=6 # build example no. 6
 ```
 
 
