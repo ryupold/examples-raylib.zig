@@ -150,7 +150,7 @@ var lightsCount: i32 = 0;
 fn createLight(typ: LightType, position: raylib.Vector3, target: raylib.Vector3, color: raylib.Color, shadr: raylib.Shader) !Light {
     std.debug.assert(lightsCount < maxLights);
 
-    var light: Light = Light{
+    const light: Light = Light{
         .enabled = true,
         .type = typ,
         .position = position,
@@ -163,7 +163,7 @@ fn createLight(typ: LightType, position: raylib.Vector3, target: raylib.Vector3,
     };
 
     var buf: [4096]u8 = undefined;
-    var lightLocation = LightLocation{
+    const lightLocation = LightLocation{
         .enabledLoc = raylib.GetShaderLocation(shadr, try std.fmt.bufPrintZ(&buf, "lights[{d}].enabled", .{lightsCount})),
         .typeLoc = raylib.GetShaderLocation(shadr, try std.fmt.bufPrintZ(&buf, "lights[{d}].type", .{lightsCount})),
         .positionLoc = raylib.GetShaderLocation(shadr, try std.fmt.bufPrintZ(&buf, "lights[{d}].position", .{lightsCount})),

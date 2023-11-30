@@ -263,7 +263,7 @@ fn writeExampleFile(exampleNr: usize) !void {
 }
 
 fn exampleDescription(b: *std.Build) ![]const u8 {
-    var buf: []u8 = try b.allocator.alloc(u8, 4096);
+    const buf: []u8 = try b.allocator.alloc(u8, 4096);
     var tmp: [4096]u8 = undefined;
     var fba = std.heap.FixedBufferAllocator.init(&tmp);
 
