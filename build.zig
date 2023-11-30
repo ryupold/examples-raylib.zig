@@ -211,7 +211,7 @@ pub fn build(b: *std.Build) !void {
 
             const raylib = @import("src/raylib/build.zig");
             const raygui = @import("src/raygui/build.zig");
-            raylib.addTo(b, exe, target, mode);
+            raylib.addTo(b, exe, target, mode, .{});
             raygui.addTo(b, exe, target, mode);
 
             switch (target.getOsTag()) {
