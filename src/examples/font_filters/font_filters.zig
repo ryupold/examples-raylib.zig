@@ -27,7 +27,7 @@ fn init(_: std.mem.Allocator) !void {
     raylib.InitWindow(screenWidth, screenHeight, "raylib [text] example - font filter");
     raylib.SetTargetFPS(60);
 
-    std.mem.copy(u8, &msg, "Loaded Font");
+    std.mem.copyForwards(u8, &msg, "Loaded Font");
 
     font = raylib.LoadFont("assets/KAISG.ttf");
 

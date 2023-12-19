@@ -278,7 +278,7 @@ fn exampleDescription(b: *std.Build) ![]const u8 {
             if (ctx.buf.len < ctx.index + bytes.len) {
                 return error.OutOfMemory;
             }
-            std.mem.copy(u8, ctx.buf[ctx.index..], bytes);
+            std.mem.copyForwards(u8, ctx.buf[ctx.index..], bytes);
             ctx.index += bytes.len;
             return bytes.len;
         }

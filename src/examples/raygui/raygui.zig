@@ -86,8 +86,8 @@ fn init(_: std.mem.Allocator) !void {
     raylib.SetTargetFPS(60);
     raylib.SetExitKey(.KEY_NULL);
 
-    std.mem.copy(u8, &textBoxText, "Text box");
-    std.mem.copy(u8, &multiTextBoxText, "Multi text box");
+    std.mem.copyForwards(u8, &textBoxText, "Text box");
+    std.mem.copyForwards(u8, &multiTextBoxText, "Multi text box");
 }
 
 fn update(_: f32) !void {
@@ -227,12 +227,12 @@ fn update(_: f32) !void {
 
             if (result == 1) {
                 // TODO: Validate textInput value and save
-                std.mem.copy(u8, &textInputFileName, &textInput);
+                std.mem.copyForwards(u8, &textInputFileName, &textInput);
             }
 
             if ((result == 0) or (result == 1) or (result == 2)) {
                 showTextInputBox = false;
-                std.mem.copy(u8, &textInput, &[_]u8{0});
+                std.mem.copyForwards(u8, &textInput, &[_]u8{0});
             }
         }
     }
