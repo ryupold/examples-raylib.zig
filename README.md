@@ -21,7 +21,7 @@ You can test the WebGL examples [here](https://ryupold.de/?post=raylib.zig).
 - [zig (master)](https://ziglang.org/documentation/master/)
 - [emscripten sdk](https://emscripten.org/)
 
-```
+```sh
 git clone --recurse-submodules https://github.com/ryupold/examples-raylib.zig
 ```
 
