@@ -23,7 +23,7 @@ pub fn build(b: *std.Build) !void {
     const exampleNr = b.option(usize, "example", try exampleDescription(b)) orelse 1;
     try writeExampleFile(exampleNr);
 
-    switch (target.getOsTag()) {
+    switch (target.result.os.tag) {
         .wasi, .emscripten => {
             const emscriptenSrc = "src/raylib/emscripten/";
             const webCachedir = "zig-cache/web/";
@@ -36,22 +36,22 @@ pub fn build(b: *std.Build) !void {
             }
             const lib = b.addStaticLibrary(.{
                 .name = APP_NAME,
-                .root_source_file = std.build.FileSource.relative("src/web.zig"),
+                .root_source_file = std.Build.LazyPath.relative("src/web.zig"),
                 .optimize = mode,
                 .target = target,
             });
             lib.addIncludePath(.{ .path = raylibSrc });
             lib.addIncludePath(.{ .path = rayguiSrc });
 
-            const emcc_file = switch (b.host.target.os.tag) {
+            const emcc_file = switch (b.host.result.os.tag) {
                 .windows => "emcc.bat",
                 else => "emcc",
             };
-            const emar_file = switch (b.host.target.os.tag) {
+            const emar_file = switch (b.host.result.os.tag) {
                 .windows => "emar.bat",
                 else => "emar",
             };
-            const emranlib_file = switch (b.host.target.os.tag) {
+            const emranlib_file = switch (b.host.result.os.tag) {
                 .windows => "emranlib.bat",
                 else => "emranlib",
             };
@@ -119,11 +119,11 @@ pub fn build(b: *std.Build) !void {
             lib.addIncludePath(.{ .path = raylibSrc });
             lib.addIncludePath(.{ .path = rayguiSrc });
             lib.addIncludePath(.{ .path = raylibSrc ++ "extras/" });
-            lib.addAnonymousModule("raylib", .{ .source_file = .{ .path = raylibBindingSrc ++ "raylib.zig" } });
-            lib.addAnonymousModule("raygui", .{
-                .source_file = .{ .path = rayguiBindingSrc ++ "raygui.zig" },
-                .dependencies = &.{
-                    .{ .name = "raylib", .module = lib.modules.get("raylib").? },
+            lib.root_module.addAnonymousImport("raylib", .{ .root_source_file = .{ .path = raylibBindingSrc ++ "raylib.zig" } });
+            lib.root_module.addAnonymousImport("raygui", .{
+                .root_source_file = .{ .path = rayguiBindingSrc ++ "raygui.zig" },
+                .imports = &.{
+                    .{ .name = "raylib", .module = lib.root_module.import_table.get("raylib").? },
                 },
             });
 
@@ -204,17 +204,17 @@ pub fn build(b: *std.Build) !void {
             std.log.info("building for desktop\n", .{});
             const exe = b.addExecutable(.{
                 .name = APP_NAME,
-                .root_source_file = std.build.FileSource.relative("src/desktop.zig"),
+                .root_source_file = std.Build.LazyPath.relative("src/desktop.zig"),
                 .optimize = mode,
                 .target = target,
             });
 
             const raylib = @import("src/raylib/build.zig");
             const raygui = @import("src/raygui/build.zig");
-            raylib.addTo(b, exe, target, mode, .{});
-            raygui.addTo(b, exe, target, mode);
+            raylib.addTo(b, exe, target.query, mode, .{});
+            raygui.addTo(b, exe, target.query, mode);
 
-            switch (target.getOsTag()) {
+            switch (target.result.os.tag) {
                 .macos => {
                     exe.linkFramework("Foundation");
                     exe.linkFramework("Cocoa");
